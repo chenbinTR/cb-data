@@ -66,7 +66,7 @@ public class ExcelProcessor {
                 continue;
             }
             // 数据异常判断
-            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent+enId+role+chId+chContent)) {
+            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent+enId+chId+chContent)) {
                 System.err.println(String.format("[Excel数据异常][%s][%s]", path, excelEntity));
             }
             if (StringUtils.isBlank(page)) {
@@ -150,7 +150,7 @@ public class ExcelProcessor {
                 continue;
             }
             // 数据异常判断
-            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent+enId+role+chId+chContent)) {
+            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent+enId+chId+chContent)) {
                 System.err.println(String.format("[Excel数据异常][%s][%s]", path, excelEntity));
             }
             if (StringUtils.isBlank(page)) {
