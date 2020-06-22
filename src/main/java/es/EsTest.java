@@ -80,11 +80,6 @@ public class EsTest {
         }
         TransportClient client = null;
         List<EsAddress> addresses = new ArrayList<>();
-//        addresses.add(new EsAddress("47.94.57.146", 9301));
-//        addresses.add(new Address("101.201.140.59", 9301));
-//        addresses.add(new Address("101.201.143.57", 9301));
-//        addresses.add(new Address("101.201.145.52", 9301));
-//        addresses.add(new Address("118.178.94.127", 9301));
         Settings settings = Settings.builder()
                 .put("cluster.name", "elasticsearch")
                 .build();

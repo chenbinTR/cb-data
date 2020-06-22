@@ -18,7 +18,7 @@ import java.util.Date;
  * @since
  */
 public class Test {
-    private static void getImgInfo(){
+    private static void getImgInfo() {
         File file = new File("C:\\Users\\cb\\Downloads\\tt\\12\\7\\C360_2013-05-06-00-25-17-363.jpg");
         BufferedImage bi = null;
         try {
@@ -30,8 +30,9 @@ public class Test {
         int height = bi.getHeight(); // 像素
         System.out.println("width=" + width + ",height=" + height + ".");
     }
-//    private static ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private static void processLog(){
+
+    //    private static ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private static void processLog() {
         LineIterator lineIterator = null;
         try {
             lineIterator = FileUtils.lineIterator(new File("Q:\\logs\\202006.txt"));
@@ -40,7 +41,7 @@ public class Test {
         }
 //        LineIterator lineIteratorQ = FileUtils.lineIterator(new File("Q:\\humor_high_dialogue20180708_2020-05-21.txt"));
         int count = 0;
-        while(lineIterator.hasNext()) {
+        while (lineIterator.hasNext()) {
             try {
                 String line = lineIterator.nextLine();
                 String[] items = line.split("\t");
@@ -55,7 +56,7 @@ public class Test {
 //                if(!appid.equals("2300101") && !appid.equals("2300102")){
 //                    continue;
 //                }
-                if(parsetype.equals("50")){
+                if (parsetype.equals("50")) {
                     System.out.println(line);
 //                    Utils.writeToTxt("Q:\\logs\\1.txt", line);
                 }
@@ -65,13 +66,15 @@ public class Test {
             }
         }
     }
+
     /**
      * 促销活动起始时间，需要根据用户创建时间来生效
      */
     private static Date MEMBER_CREATE_DATE;
     private static Date createDate;
     private static SimpleDateFormat simFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    static{
+
+    static {
 
         try {
             MEMBER_CREATE_DATE = simFormat.parse("2020-04-21 22:00:00");
@@ -80,11 +83,9 @@ public class Test {
             e.printStackTrace();
         }
     }
+
     public static void main(String[] args) throws IOException {
-        System.out.println(SymmetricEncoder.AESEncode("http://39.107.15.37:30011/nlpcore"));
-
-
-
+        System.out.println(SymmetricEncoder.AESEncode(""));
 //        System.out.println(SimpleDateFormat.getDateTimeInstance(2,2).format(new Date()));
 //        System.out.println(simFormat.format(DateUtils.addDays(new Date(), 3)));
 //        System.out.println(Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(new File("Q:\\1-0.672500-0.553474-0.765625-0.589383-11.mp3"))));

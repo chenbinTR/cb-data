@@ -1,7 +1,6 @@
 package tts;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import utils.Utils;
@@ -24,10 +23,7 @@ public class TtsTest {
      * -y 覆盖输出文件
      *
      */
-//    private static final String TTS_URL = "http://tts.tuling123.com/tts/getText";
-    private final String TTS_URL_PROD = "http://47.94.53.111/tts-inner/getText?globalId=111749176527810131";
-    private final String TTS_URL_ALPHA = "http://60.205.212.14:8591/tts-inner/getText?globalId=111749176527810131";
-    private final String TTS_URL_BETA = "http://47.94.53.111/tts-inner/getText?globalId=111749176527810131";
+    private final String TTS_URL = "";
     private TtsRequest ttsRequest;
     @Before
     public void initData(){
@@ -59,7 +55,7 @@ public class TtsTest {
 //        String param = "{\"text_str\":\"我是张清一\", \"encode_fmt\":\"base64\", \"biz_code\":\"e2e_xixi_16k\", \"stream\":0}";
 //        String param = "{\"syl_flag\": 0,\"stream\": 0,\"speed\": 5,\"fast_mode\":0,\"track_key\": \"\", \"text_str\": \"的了还叶比人，家国展王想长坏蜀。\", \"loudness\": 1, \"biz_code\": \"e2e_xixi_16k\", \"encode_fmt\": \"base64\"}";
 //        String param = "{\"arousal\":1.2,\"biz_code\":\"e2e_xixi_16k\",\"encode_fmt\":\"base64\",\"f0_bias\":1.0,\"fast_mode\":1,\"globalId\":\"111749186808810041\",\"loudness\":1.0,\"speed\":0.9,\"stream\":0,\"text_str\":\"哼唱的声音\"}";
-        String result = Utils.httpPost(JSON.toJSONString(ttsRequest), TTS_URL_ALPHA);
+        String result = Utils.httpPost(JSON.toJSONString(ttsRequest), TTS_URL);
         String[] results = result.split("}\\{");
         final String pcmData = JSON.parseObject(results[0]+"}").getString("data");
         // 写入pcm文件
