@@ -1,7 +1,5 @@
 package redis;
 
-import redis.clients.jedis.Jedis;
-
 /**
  * @author ChenOT
  * @date 2020-01-19

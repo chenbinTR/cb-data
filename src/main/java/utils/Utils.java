@@ -26,13 +26,6 @@ import java.util.*;
  * Created by cb on 2017-03-09.
  */
 public class Utils {
-    public static void main(String[] args) {
-        try {
-            executeSingleChannel(new File("E:\\FFOutput\\2012.mp3"), "E:\\1.mp3");
-        } catch (EncoderException e) {
-            e.printStackTrace();
-        }
-    }
     //将文件转化为单声道
     public static File executeSingleChannel(File source,String desFileName) throws EncoderException {
         File target = new File(desFileName);

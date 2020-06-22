@@ -51,7 +51,7 @@ public class ESSekectTest {
      */
     @Test
     public void searcQueryString() {
-        SearchResponse searchResponse = EsClient.getClient(EsAddress.ALPHA_TEST).prepareSearch("nlp_book_search")
+        SearchResponse searchResponse = EsClient.getClient(EsAddress.ALPHA_ES).prepareSearch("nlp_book_search")
                 .setTypes("doc")
                 .setQuery(QueryBuilders.queryStringQuery("生活习惯好故事"))
                 .get();

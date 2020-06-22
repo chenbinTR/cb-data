@@ -7,11 +7,11 @@ package utils;
  * @since
  */
 public enum  RedisServerEnum {
-    DEV_CHAT("6383.redis.tuling.com",6383, 0, "nlpturing2016"),
-    ALPHA_CHAT("redis6379.redis.tulingapi.com",6379, 2, "nlpturing2016"),
-    PROD_CHAT("10.25.134.248",6386, 2, "nlpturing2016"),
-    PROD_SHIELD("turingshield-6393.redis.tulingapi.com",6393, 0, null),
-    PROD_TTS("10.31.144.30",6379,2,"nlpturing2016");
+    DEV_CHAT("zvULJSCCVBv5tnSwz9v+CPMz/M8KVOw2rRWfToms9k8=",6383, 0, "nlpturing2016"),
+    ALPHA_CHAT("RA/hiaR71pDWmOvuSeqrab24IrTPGYElP4pvSJR9ZOE=",6379, 2, "nlpturing2016"),
+    PROD_CHAT("LebHZyyZV+MQ3dZnyaUmAw==",6386, 2, "nlpturing2016"),
+    PROD_SHIELD("YwZHUt2GKTDmfbQQ0uBwVXgZNh40KfEFQneX79OAqnQemQtOOWRrlnckTn5nacqb",6393, 0, null),
+    PROD_TTS("1NLIii4NIbnK36ydiyVFPA==",6379,2,"nlpturing2016");
 
     private String host;
     private int port;

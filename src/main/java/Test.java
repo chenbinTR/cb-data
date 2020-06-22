@@ -1,5 +1,7 @@
+import cn.hutool.crypto.SecureUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
+import utils.SymmetricEncoder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -79,8 +81,11 @@ public class Test {
         }
     }
     public static void main(String[] args) throws IOException {
-        System.out.println("1"+System.lineSeparator()+"2");
-        System.out.println(SimpleDateFormat.getDateTimeInstance(2,2).format(new Date()));
+        System.out.println(SymmetricEncoder.AESEncode("http://39.107.15.37:30011/nlpcore"));
+
+
+
+//        System.out.println(SimpleDateFormat.getDateTimeInstance(2,2).format(new Date()));
 //        System.out.println(simFormat.format(DateUtils.addDays(new Date(), 3)));
 //        System.out.println(Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(new File("Q:\\1-0.672500-0.553474-0.765625-0.589383-11.mp3"))));
     }
