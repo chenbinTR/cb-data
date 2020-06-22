@@ -81,9 +81,7 @@ public class Test {
         }
     }
     public static void main(String[] args) throws IOException {
-// 获取不同系统的换行符
-//        String lineSeparator = System.lineSeparator();
-//        System.out.println("1"+lineSeparator+"2");
+        System.out.println("1"+System.lineSeparator()+"2");
         System.out.println(SimpleDateFormat.getDateTimeInstance(2,2).format(new Date()));
 //        System.out.println(simFormat.format(DateUtils.addDays(new Date(), 3)));
 //        System.out.println(Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(new File("Q:\\1-0.672500-0.553474-0.765625-0.589383-11.mp3"))));
