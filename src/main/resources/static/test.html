@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.bootcss.com/jquery/2.1.0/jquery.min.js"></script>
+    <script type="text/javascript">
+        function crosRequest(){
+            $.ajax({
+//                url:'http://open.beta.turingapi.com/v1/openapi',
+//                url:'http://open.beta.turingapi.com/v1/cmd',
+                url:'http://beta.platform.tuling123.com/webdata/datapoint',
+//                url:'http://127.0.0.1:9922/v1/openapi',
+//                url:'http://127.0.0.1:9922/v1/cmd',
+                type:'POST',
+                dataType:'json',
+//                contentType : "application/json",
+//                data:JSON.stringify({
+//                    "input_text": "你好",
+//                    "cmd": "CACHE_CLEAR",
+//                    "user_info": {
+//                        "open_id": "123"
+//                    },
+                data: {
+                    type: "1"
+                },
+//                    "key":"f6742ece86ec4b82a367fa281f6d58b7"
+//                }),
+                success : function(result){
+                    console.log(result);
+                    document.getElementById('result').innerHTML=JSON.stringify(result);
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<button onclick="crosRequest()">请求跨域资源</button>
+<div id="result"></div>
+</body>
+</html>
