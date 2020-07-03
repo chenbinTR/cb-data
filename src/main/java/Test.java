@@ -1,7 +1,10 @@
 import cn.hutool.crypto.SecureUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import utils.SymmetricEncoder;
+import utils.Utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -10,6 +13,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author ChenOT
@@ -85,7 +89,14 @@ public class Test {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println(SymmetricEncoder.AESEncode(""));
+        List<String> contents = Utils.readFileToList("Q:\\logs\\idiom.json");
+        for(String content:contents){
+            JSONObject jsonObject = JSON.parseObject(content);
+            String word = jsonObject.getString("word");
+            String explanation = jsonObject.getString("explanation");
+            Utils.writeToTxt("Q:\\logs\\idiom.txt", word.replaceAll("\\s", "")+"\t"+explanation.replaceAll("\\s",""));
+        }
+//        System.out.println(SymmetricEncoder.AESEncode(""));
 //        System.out.println(SimpleDateFormat.getDateTimeInstance(2,2).format(new Date()));
 //        System.out.println(simFormat.format(DateUtils.addDays(new Date(), 3)));
 //        System.out.println(Base64.getEncoder().encodeToString(FileUtils.readFileToByteArray(new File("Q:\\1-0.672500-0.553474-0.765625-0.589383-11.mp3"))));
