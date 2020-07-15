@@ -4,10 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author ChenOT
@@ -16,9 +13,25 @@ import java.util.concurrent.TimeUnit;
  * @since
  */
 public class ThreadListProcessor {
-    public static void main(String[] args) {
-        for(int i=0; i<3; i++){
-            test();
+    public static void main(String[] args) throws InterruptedException {
+        for(int i=0; i<10; i++){
+            System.out.println("生成第"+i+"批次任务");
+            Thread.sleep(1000);
+            CountDownLatch downLatch = new CountDownLatch(10);
+            for(int j=0; j<10; j++){
+                ThreadContainer.getExecutor().execute(()->{
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println("正在执行任务");
+                    downLatch.countDown();
+                });
+            }
+            downLatch.await();
+            System.out.println("第"+i+"执行完成");
+
         }
     }
     private static void test(){

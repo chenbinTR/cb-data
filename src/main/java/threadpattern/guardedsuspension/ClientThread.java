@@ -16,7 +16,7 @@ public class ClientThread extends Thread {
             System.out.println(Thread.currentThread().getName() + " requests " + request);
             requestQueue.putRequest(request);
             try {
-                Thread.sleep(1);
+                Thread.sleep(3);
             } catch (InterruptedException e) {
             }
         }
