@@ -27,7 +27,7 @@ import java.util.*;
  */
 public class Utils {
     //将文件转化为单声道
-    public static File executeSingleChannel(File source,String desFileName) throws EncoderException {
+    public static File executeSingleChannel(File source, String desFileName) throws EncoderException {
         File target = new File(desFileName);
         AudioAttributes audio = new AudioAttributes();
         audio.setCodec("libmp3lame");
@@ -75,42 +75,39 @@ public class Utils {
      * @param fileName 文件路径+文件名
      * @param list     待写内容
      */
-    public static void writeExcel(String fileName, List<ExcelEntity> list) {
-        try {
-            File file = new File(fileName);
-            if(!file.exists()){
-                try {
-                    HSSFWorkbook workbook = new HSSFWorkbook();
-                    FileOutputStream fileOut = new FileOutputStream(fileName);
-                    workbook.write(fileOut);
-                    fileOut.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    public static void writeExcel(String fileName, List<ExcelEntity> list) throws IOException {
+        File file = new File(fileName);
+        if (!file.exists()) {
+            try {
+                HSSFWorkbook workbook = new HSSFWorkbook();
+                FileOutputStream fileOut = new FileOutputStream(fileName);
+                workbook.write(fileOut);
+                fileOut.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            InputStream input = new FileInputStream(fileName);
-            Workbook wb = new HSSFWorkbook(input);
-            Sheet sheet1 = wb.getSheet("sheet1");
-            if(null == sheet1){
-                sheet1 = wb.createSheet();
-            }
-            for (int i = 0; i < list.size(); i++) {
-                Row row = sheet1.createRow(i);
-                row.createCell(0).setCellValue(list.get(i).getValue0());
-                row.createCell(1).setCellValue(list.get(i).getValue1());
-                row.createCell(2).setCellValue(list.get(i).getValue2());
-                row.createCell(3).setCellValue(list.get(i).getValue3());
+        }
+        InputStream input = new FileInputStream(fileName);
+        Workbook wb = new HSSFWorkbook(input);
+        Sheet sheet1 = wb.getSheet("sheet1");
+        if (null == sheet1) {
+            sheet1 = wb.createSheet();
+        }
+        for (int i = 0; i < list.size(); i++) {
+            Row row = sheet1.createRow(i);
+            row.createCell(0).setCellValue(list.get(i).getValue0());
+            row.createCell(1).setCellValue(list.get(i).getValue1());
+            row.createCell(2).setCellValue(list.get(i).getValue2());
+            row.createCell(3).setCellValue(list.get(i).getValue3());
 //                row.createCell(4).setCellValue(list.get(i).getValue4());
 //                row.createCell(5).setCellValue(list.get(i).getValue5());
 //                row.createCell(6).setCellValue(list.get(i).getValue6());
-            }
-            OutputStream stream = new FileOutputStream(fileName);
-            wb.write(stream);
-            stream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        OutputStream stream = new FileOutputStream(fileName);
+        wb.write(stream);
+        stream.close();
     }
+
     /**
      * 文件合并
      *
@@ -127,7 +124,7 @@ public class Utils {
             }
             isExistSource = true;
         }
-        if(!isExistSource){
+        if (!isExistSource) {
             return;
         }
         FileOutputStream out = null;
@@ -137,12 +134,12 @@ public class Utils {
             e.printStackTrace();
         }
         for (String sourceFileName : sourceFileNames) {
-            if(StringUtils.isBlank(sourceFileName)){
+            if (StringUtils.isBlank(sourceFileName)) {
                 continue;
             }
             File f = new File(sourceFileName);
-            if(!f.exists()){
-                System.err.println("文件不存在："+sourceFileName+destFileName);
+            if (!f.exists()) {
+                System.err.println("文件不存在：" + sourceFileName + destFileName);
                 continue;
             }
             FileInputStream sourceFileInputStream = null;
@@ -214,13 +211,13 @@ public class Utils {
 //            throw new RuntimeException("ffmpeg error");
 //        }
         try {
-            String destFolderNew = destFileName.substring(0,destFileName.lastIndexOf(File.separator)+1).replace("Audio_1","Audio");
-            String fileName = destFileName.substring(destFileName.lastIndexOf(File.separator)+1);
+            String destFolderNew = destFileName.substring(0, destFileName.lastIndexOf(File.separator) + 1).replace("Audio_1", "Audio");
+            String fileName = destFileName.substring(destFileName.lastIndexOf(File.separator) + 1);
             File file = new File(destFolderNew);
-            if(file.exists()){
+            if (file.exists()) {
                 file.mkdirs();
             }
-            executeSingleChannel(new File(destFileName), destFolderNew+fileName);
+            executeSingleChannel(new File(destFileName), destFolderNew + fileName);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println(JSONObject.toJSONString(sourceFileNames));
@@ -228,6 +225,7 @@ public class Utils {
             throw new RuntimeException("executeSingleChannel error");
         }
     }
+
     /**
      * 文件合并
      *
@@ -244,7 +242,7 @@ public class Utils {
             }
             isExistSource = true;
         }
-        if(!isExistSource){
+        if (!isExistSource) {
             return;
         }
         FileOutputStream out = null;
@@ -254,12 +252,12 @@ public class Utils {
             e.printStackTrace();
         }
         for (String sourceFileName : sourceFileNames) {
-            if(StringUtils.isBlank(sourceFileName)){
+            if (StringUtils.isBlank(sourceFileName)) {
                 continue;
             }
             File f = new File(sourceFileName);
-            if(!f.exists()){
-                System.err.println("文件不存在："+sourceFileName+destFileName);
+            if (!f.exists()) {
+                System.err.println("文件不存在：" + sourceFileName + destFileName);
                 continue;
             }
             FileInputStream sourceFileInputStream = null;
@@ -291,6 +289,7 @@ public class Utils {
             e.printStackTrace();
         }
     }
+
     /**
      * @param fileName
      * @param sheetNum
@@ -307,7 +306,7 @@ public class Utils {
             Workbook wb = null;
             // 根据文件格式(2003或者2007)来初始化
 //            if (isE2007) {
-                wb = new XSSFWorkbook(input);
+            wb = new XSSFWorkbook(input);
 //            } else {
 //                wb = new HSSFWorkbook(input);
 //            }
@@ -405,8 +404,9 @@ public class Utils {
         }
         return list;
     }
+
     public static String httpPost(String param, String url) {
-            return httpPost(param, url, "UTF-8");
+        return httpPost(param, url, "UTF-8");
     }
 
     /**
@@ -446,7 +446,7 @@ public class Utils {
                 result += line;
             }
         } catch (Exception e) {
-             e.printStackTrace();
+            e.printStackTrace();
         } finally {
             try {
                 if (out != null) {
@@ -499,6 +499,7 @@ public class Utils {
         }
 
     }
+
     public static void writeToTxt(String path, String content) {
         File file = new File(path);
         FileWriter fw = null;
@@ -541,7 +542,7 @@ public class Utils {
                         new FileInputStream(file), "UTF-8"));
                 String temp = null;
                 while (null != (temp = reader.readLine())) {
-                    if(StringUtils.isNotBlank(temp.trim())){
+                    if (StringUtils.isNotBlank(temp.trim())) {
                         collection.add(temp.trim());
                     }
                 }
@@ -603,7 +604,8 @@ public class Utils {
 
     /**
      * NIO way
-     *  读取文件
+     * 读取文件
+     *
      * @param filename
      * @return
      * @throws IOException

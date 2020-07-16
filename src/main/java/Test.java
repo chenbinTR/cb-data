@@ -1,10 +1,12 @@
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.lang3.StringUtils;
+import utils.ExcelEntity;
 import utils.SymmetricEncoder;
 import utils.Utils;
 
@@ -103,6 +105,49 @@ public class Test {
     }
 
     public static void main(String[] args) throws IOException {
+        Utils.createExcel("Q:\\logs\\music.xlsx");
+        LineIterator lineIterator = FileUtils.lineIterator(new File("Q:\\logs\\music.txt"));
+        String line = null;
+        List<ExcelEntity> excelEntityList = new ArrayList<>();
+        while (lineIterator.hasNext()) {
+            try {
+                line = lineIterator.nextLine();
+                JSONObject jsonObject = JSON.parseObject(line.trim());
+                String songName = jsonObject.getString("song_name");
+                if (StringUtils.isBlank(songName)) {
+                    songName = "";
+                }
+                JSONArray singerNames = jsonObject.getJSONArray("singer_name");
+                String singerName;
+                if (singerNames == null || singerNames.size() == 0) {
+                    singerName = "";
+                } else {
+                    singerName = StringUtils.join(singerNames.toArray(), "|");
+                }
+                String albumName = jsonObject.getString("album_name");
+                if (StringUtils.isBlank(albumName)) {
+                    albumName = "";
+                }
+                String lyric = jsonObject.getString("lyric");
+                if (StringUtils.isBlank(lyric)) {
+                    lyric = "";
+                }
+                ExcelEntity excelEntity = new ExcelEntity();
+                excelEntity.setValue0(singerName);
+                excelEntity.setValue1(songName);
+                excelEntity.setValue2(albumName);
+                excelEntity.setValue3(lyric);
+                excelEntityList.add(excelEntity);
+//                if (StringUtils.isAnyBlank(songName, albumName, lyric, singerName)) {
+//                    System.err.println("singerName: " + singerName + "songName: " + songName + "albumName: " + albumName + "lyric: " + lyric);
+//                }
+//                Utils.writeToTxt("Q:\\logs\\music_format.txt", singerName + "\t" + songName + "\t" + albumName + "\t" + lyric);
+            } catch (Exception e) {
+                System.err.println(line);
+                e.printStackTrace();
+            }
+            Utils.writeExcel("Q:\\logs\\music.xlsx", excelEntityList);
+        }
 //        File file = new File("Q:\\logs\\wiki.txt");
 //        file.deleteOnExit();
 //        System.out.println("123".substring(1,0));
@@ -131,7 +176,7 @@ public class Test {
 //        }
     }
 
-    private static void tt(){
+    private static void tt() {
         List<String> contents = Utils.readFileToList("Q:\\logs\\dict_antonym.txt");
         String question1 = "%s的反义词是什么";
         String question2 = "%s的反义词";
