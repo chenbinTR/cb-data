@@ -140,11 +140,13 @@ public class ExcelProcessor {
             String enContent = excelEntity.getValue4();
             String chId = excelEntity.getValue5();
             String chContent = excelEntity.getValue6();
+
             // 如果有中文内容，没有英文内容，则英文内容与中文内容相同
 //            if(StringUtils.isBlank(enId)&&StringUtils.isBlank(enContent)&&StringUtils.isNotBlank(chId)&&StringUtils.isNotBlank(chContent)){
                 enId = chId;
                 enContent = chContent;
 //            }
+
             // 跳过表头
             if (areaId.equals("框号")) {
                 continue;
@@ -181,7 +183,9 @@ public class ExcelProcessor {
                 page = "";
                 continue;
             }
-
+            if(StringUtils.isAllBlank(chId, chContent)){
+                System.err.println("中文内容列空");
+            }
             bookEntityList.add(bookEntity);
         }
         return bookMap;
