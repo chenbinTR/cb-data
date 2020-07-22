@@ -40,23 +40,8 @@ public class Test {
     private static SimpleDateFormat simFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) throws IOException {
-//        System.out.println(SymmetricEncoder.AESDncode("8UKRcddeyz78QQ1G5etx1A=="));
-        LineIterator lineIterator = FileUtils.lineIterator(new File("E:\\logs\\es_prod.txt"));
-        String line = "";
-        while (lineIterator.hasNext()) {
-            try {
-                line = lineIterator.nextLine();
-                JSONObject jsonObject = JSONObject.parseObject(line);
-                int id = jsonObject.getInteger("id");
-                String question = jsonObject.getString("question");
-                if(id>4994038 && id<5000000){
-                    Utils.writeToTxt("E:\\logs\\dd.txt", id+"\t"+question);
-                }
-//
-            } catch (Exception e) {
-                System.err.println(line);
-                e.printStackTrace();
-            }
-        }
+        System.out.println(SymmetricEncoder.AESEncode("1"));
+
+
     }
 }
