@@ -42,6 +42,12 @@ public class Test {
     public static void main(String[] args) throws IOException {
         System.out.println(SymmetricEncoder.AESEncode("1"));
 
+        Float f1 = 0.5672F;
+        Float f2 = 0.5671F;
+
+        for (int i=0;i<10;i++){
+            System.out.println(f1.compareTo(f2));
+        }
 
     }
 }

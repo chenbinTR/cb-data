@@ -1,5 +1,6 @@
 package java8;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.util.*;
@@ -16,8 +17,8 @@ import java.util.stream.Collectors;
 public class StreamLambda {
     private List<Person> javaProgrammers = new ArrayList<Person>() {
         {
-            add(new Person("Elsdon", "Jaycob", "Java programmer", "male", 43, 2000));
-            add(new Person("Tamsen", "Brittany", "Java programmer", "female", 23, 1500));
+            add(new Person("", "Jaycob", "Java programmer", "male", 43, 2000));
+            add(new Person("", "Brittany", "Java programmer", "female", 23, 1500));
             add(new Person("Floyd", "Donny", "Java programmer", "male", 33, 1800));
             add(new Person("Sindy", "Jonie", "Java programmer", "female", 32, 1600));
             add(new Person("Vere", "Hervey", "Java programmer", "male", 22, 1200));
@@ -123,9 +124,11 @@ public class StreamLambda {
     @Test
     public void testFilter() {
         System.out.println("下面是月薪超过 $1,400 的PHP程序员:");
-        phpProgrammers.stream()
-                .filter((p) -> (p.getSalary() > 1400))
-                .forEach((p) -> System.out.printf("%s %s; ", p.getFirstName(), p.getLastName()));
+        long count = phpProgrammers.stream()
+                .filter((p) -> (p.getSalary() > 14000))
+                .count();
+        System.out.println(count);
+//                .forEach((p) -> System.out.printf("%s %s; ", p.getFirstName(), p.getLastName()));
 
         // 定义 filters
         Predicate<Person> ageFilter = (p) -> (p.getAge() > 25);
@@ -172,5 +175,13 @@ public class StreamLambda {
         javaProgrammers.forEach((p) -> System.out.println(p.getFirstName()));
 //        phpProgrammers.forEach((p) -> System.out.printf("%s %s; ", p.getFirstName(), p.getLastName()));
 //        set.forEach(p-> System.out.println(p));
+    }
+
+    @Test
+    public void testFilter1() {
+        List<Person> listnew = javaProgrammers.stream().filter(e-> StringUtils.isBlank(e.getFirstName())).collect(Collectors.toList());
+        listnew.forEach(e->{e.setFirstName(UUID.randomUUID().toString());});
+        listnew.forEach(e-> System.out.println(e.getFirstName()));
+//        javaProgrammers.forEach(e-> System.out.println(e.getFirstName()));
     }
 }
