@@ -305,11 +305,11 @@ public class Utils {
             InputStream input = new FileInputStream(fileName);
             Workbook wb = null;
             // 根据文件格式(2003或者2007)来初始化
-//            if (isE2007) {
-            wb = new XSSFWorkbook(input);
-//            } else {
-//                wb = new HSSFWorkbook(input);
-//            }
+            if (isE2007) {
+                wb = new XSSFWorkbook(input);
+            } else {
+                wb = new HSSFWorkbook(input);
+            }
             // 获得表单
             Sheet sheet = wb.getSheetAt(sheetNum);
             // 获得表单的迭代器
@@ -428,8 +428,8 @@ public class Utils {
             conn.setDoInput(true);
             conn.setUseCaches(false);
             conn.setRequestMethod("POST");
-            conn.setConnectTimeout(10000);
-            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
             conn.setRequestProperty("Content-Type", "application/json");
 //            conn.setRequestProperty("Auth-Token", "f8dfe5d353234c71ac9bafb410ae62de");
             conn.connect();

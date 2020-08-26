@@ -20,10 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author ChenOT
@@ -48,6 +45,8 @@ public class Test {
         for (int i=0;i<10;i++){
             System.out.println(f1.compareTo(f2));
         }
+
+        ThreadLocalRandom.current().nextInt(0);
 
     }
 }
