@@ -22,7 +22,9 @@ public class ShieldTest {
     public static void main(String[] args) {
         isSensitive("毛泽东是傻逼");
         List<ExcelEntity> excelEntityList = Utils.readXml("E:\\logs\\成语解释数据(3.9万语料)_JZQ_20200701.xlsx", 0);
+        int count = 0;
         for (ExcelEntity excelEntity : excelEntityList) {
+            System.out.println(++count);
             int flag = 0;
             if (isSensitive(excelEntity.getValue0())) {
                 flag = 1;
