@@ -38,6 +38,9 @@ public class ShieldTest {
             if (flag == 0 && isSensitive(excelEntity.getValue3())) {
                 flag = 1;
             }
+            if (flag == 0 && isSensitive(excelEntity.getValue4())) {
+                flag = 1;
+            }
             Utils.writeToTxt("E:\\logs\\成语解释数据.txt", flag + "");
         }
     }
