@@ -18,11 +18,11 @@ public class MainProcessor {
     /**
      * 预检验开关
      */
-    private static boolean isCheck = false;
+    private static int isCheck = 0;
     /**
-     * 待处理的套书文件夹名称集合
+     * 待处理的套书文件夹名称集合`
      */
-    private static List<String> seriesNameList = Arrays.asList("广州英语口语");
+    private static List<String> seriesNameList = Arrays.asList("新版典范英语");
 //    private static List<String> seriesNameList;
 //    static{
 //        File file = new File("E:\\BOOK_DATA\\已处理\\已修正-加静音段\\英语");
@@ -41,7 +41,7 @@ public class MainProcessor {
                 String excelFilePath = getExcelFilePath(bookParam.getSOURCE_BOOK_FOLDER());
                 Map<String, List<BookAreaEntity>> pageBookEntityMap = ExcelProcessor.readBookAreaEntity(excelFilePath, bookParam);
 
-                if (isCheck) {
+                if (1 == isCheck) {
                     // 验证音频文件是否存在
                     CheckProcessor.checkVoice(pageBookEntityMap, bookParam);
                 } else {

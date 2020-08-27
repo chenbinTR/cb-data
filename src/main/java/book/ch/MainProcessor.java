@@ -26,7 +26,7 @@ public class MainProcessor {
     /**
      * 待处理的套书文件夹名称集合
      */
-    private static List<String> seriesNameList = Arrays.asList("青岛出版社数学六三制");
+    private static List<String> seriesNameList = Arrays.asList("人教部编版初中语文_20200722");
 //    private static List<String> seriesNameList;
 //    static{
 //        File file = new File("E:\\BOOK_DATA\\已处理\\已修正-加静音段");

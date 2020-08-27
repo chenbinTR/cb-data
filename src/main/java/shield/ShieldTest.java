@@ -21,7 +21,7 @@ public class ShieldTest {
 
     public static void main(String[] args) {
         isSensitive("毛泽东是傻逼");
-        List<ExcelEntity> excelEntityList = Utils.readXml("E:\\logs\\成语解释数据(3.9万语料)_JZQ_20200701.xlsx", 0);
+        List<ExcelEntity> excelEntityList = Utils.readXml("E:\\logs\\中国，世界之最（1千语料）_JZQ_20200702.xlsx", 1);
         int count = 0;
         for (ExcelEntity excelEntity : excelEntityList) {
             System.out.println(++count);
@@ -41,7 +41,7 @@ public class ShieldTest {
             if (flag == 0 && isSensitive(excelEntity.getValue4())) {
                 flag = 1;
             }
-            Utils.writeToTxt("E:\\logs\\成语解释数据.txt", flag + "");
+            Utils.writeToTxt("E:\\logs\\中国之最.txt", flag + "");
         }
     }
 
