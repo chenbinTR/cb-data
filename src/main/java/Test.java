@@ -38,7 +38,6 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         System.out.println(SymmetricEncoder.AESEncode("1"));
-
         Float f1 = 0.5672F;
         Float f2 = 0.5671F;
 
@@ -46,7 +45,11 @@ public class Test {
             System.out.println(f1.compareTo(f2));
         }
 
-        ThreadLocalRandom.current().nextInt(0);
+        int value = -10;
+        int a = 100;
+        System.out.println(a+value);
+
+//        ThreadLocalRandom.current().nextInt(0);
 
     }
 }
