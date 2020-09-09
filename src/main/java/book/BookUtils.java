@@ -23,6 +23,24 @@ import java.util.List;
  */
 public class BookUtils {
     /**
+     * 获取excel文件完整路径
+     *
+     * @param bookFolderPath
+     * @return
+     */
+    public static String getExcelFilePath(String bookFolderPath) {
+        File file = new File(bookFolderPath);
+        String[] names = file.list();
+        String excelFilePath = "";
+        for (String name : names) {
+            if (name.toLowerCase().contains("xls")) {
+                excelFilePath = bookFolderPath + name;
+                break;
+            }
+        }
+        return excelFilePath;
+    }
+    /**
      * @param fileName
      * @param sheetNum
      * @return

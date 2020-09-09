@@ -1,26 +1,9 @@
-import cn.hutool.crypto.SecureUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.LineIterator;
-import org.apache.commons.lang3.StringUtils;
-import utils.ExcelEntity;
 import utils.SymmetricEncoder;
-import utils.Utils;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.*;
 
 /**
  * @author ChenOT
@@ -48,6 +31,9 @@ public class Test {
         int value = -10;
         int a = 100;
         System.out.println(a+value);
+
+        LocalDate date = LocalDate.now();
+        System.out.println(date);
 
 //        ThreadLocalRandom.current().nextInt(0);
 
