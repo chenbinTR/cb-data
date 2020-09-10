@@ -17,8 +17,13 @@ import java.util.regex.Pattern;
  * @see
  * @since
  */
-public class AsmProcessor {
-    static final Pattern PATTERN = Pattern.compile("(_P\\d+[A-Z]V|V_)(\\d+)(_BEGIN:)");
+public class AsmProcessorKehu {
+    static final Pattern PATTERN = Pattern.compile("(_)(\\d+)(_P\\d+[A-Z]V|V_)(_BEGIN:)");
+
+    public static void main(String[] args) {
+        readAsmFile("E:\\BOOK_DATA\\已处理\\已修正\\人教-test\\三年级\\coordsrc\\P001V.asm");
+    }
+
     /**
      * 读取单个asm文件
      *
@@ -37,10 +42,12 @@ public class AsmProcessor {
             if (line.endsWith("_BEGIN:")) {
                 isInDomain = true;
                 // 提取框号
-                Matcher h = PATTERN.matcher(line);
-                while (h.find()) {
-                    kuangNum = Integer.valueOf(h.group(2));
-                }
+//                Matcher h = PATTERN.matcher(line);
+//                while (h.find()) {
+                String kuangNumStr = line.replaceFirst("_", "");
+                kuangNumStr = kuangNumStr.substring(0, kuangNumStr.indexOf("_"));
+                kuangNum = Integer.valueOf(kuangNumStr);
+//                }
             }
             if (!isInDomain) {
                 continue;
@@ -54,15 +61,15 @@ public class AsmProcessor {
                         .trim();
                 String[] xy = content.split(",");
                 AsmEntity asmEntity = new AsmEntity();
-                asmEntity.setTopLeftX(xy[0].replaceAll("xx|XX","X"));
-                asmEntity.setTopLeftY(xy[1].replaceAll("yy|YY","Y"));
-                asmEntity.setLowerRightX(xy[2].replaceAll("xx|XX","X"));
-                asmEntity.setLowerRightY(xy[3].replaceAll("yy|YY","Y"));
+                asmEntity.setTopLeftX(xy[0].toLowerCase().replace("x", "").replace("y", ""));
+                asmEntity.setTopLeftY(xy[1].toLowerCase().replace("x", "").replace("y", ""));
+                asmEntity.setLowerRightX(xy[2].toLowerCase().replace("x", "").replace("y", ""));
+                asmEntity.setLowerRightY(xy[3].toLowerCase().replace("x", "").replace("y", ""));
 
                 asmEntityList.add(asmEntity);
             }
             // 判断域结束
-            if (line.endsWith("_END")||line.endsWith("_END:")) {
+            if (line.endsWith("_END") || line.endsWith("_END:")) {
                 isInDomain = false;
                 List<AsmEntity> asmEntities = new ArrayList<>(asmEntityList.size());
                 asmEntities.addAll(asmEntityList);
@@ -73,15 +80,15 @@ public class AsmProcessor {
         // 判断对应坐标转换规则，使用的文件
         int type = 0;
         int index = 0;
-        if(asmMap.size()>1){
+        if (asmMap.size() > 1) {
             int firstAreaId = 0;
-            for(Integer key:asmMap.keySet()){
-                if(index == 0){
+            for (Integer key : asmMap.keySet()) {
+                if (index == 0) {
                     firstAreaId = key;
                 }
                 // 判断第二个key，是否大约第一个
-                if(index == 1){
-                    if(key>firstAreaId){
+                if (index == 1) {
+                    if (key > firstAreaId) {
                         type = 1;
                     }
                     break;

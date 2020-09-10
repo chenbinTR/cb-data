@@ -23,7 +23,7 @@ import java.util.Map;
  * @Description: TODO
  * @date 2019/12/23
  */
-public class CheckProcessor {
+public class CheckProcessorKehu {
     /**
      * 封面音频、文字处理
      *
@@ -50,8 +50,8 @@ public class CheckProcessor {
      * 按页合成音频文件
      * 按页合成文本文件
      *
-     * @param bookEntityMap  读取每本书的excel后的到的key为page，value为域、音频等内容list的map
-     * @param bookParams 书文件夹名字
+     * @param bookEntityMap 读取每本书的excel后的到的key为page，value为域、音频等内容list的map
+     * @param bookParams    书文件夹名字
      */
     public static void checkVoice(final Map<String, List<BookAreaEntity>> bookEntityMap, BookParams bookParams) {
         System.out.println(bookParams.getBookName());
@@ -60,17 +60,15 @@ public class CheckProcessor {
         // 处理内页音频
         for (String page : bookEntityMap.keySet()) {
             // 获取数字页码
-            int pageNum = ExcelProcessor.getPageNum(page);
+            int pageNum = ExcelProcessorKehu.getPageNum(page);
             // 单页文本
             for (BookAreaEntity bookEntity : bookEntityMap.get(page)) {
                 if (StringUtils.isNotBlank(bookEntity.getEnId())) {
 
-//                    if (!BookUtils.isFileExist(String.format(PathConstant.SOURCE_VOICE_FOLDER, bookFolderName) + bookEntity.getEnId() + ".mp3")) {
                     if (!BookUtils.isFileExist(bookParams.getSOURCE_VOICE_FOLDER() + bookEntity.getEnId() + ".mp3")) {
                         System.err.println(String.format("[%s][英文-音频不存在][%s]", bookParams.getBookName(), bookEntity.getEnId()));
                     }
                     if (StringUtils.isNotBlank(bookEntity.getChId())) {
-//                        if (!BookUtils.isFileExist(String.format(PathConstant.SOURCE_VOICE_FOLDER, bookFolderName) + bookEntity.getChId() + ".mp3")) {
                         if (!BookUtils.isFileExist(bookParams.getSOURCE_VOICE_FOLDER() + bookEntity.getChId() + ".mp3")) {
                             System.err.println(String.format("[%s][中文-音频不存在][%s]", bookParams.getBookName(), bookEntity.getChId()));
                         }
@@ -85,18 +83,18 @@ public class CheckProcessor {
     /**
      * 将一本书，按域生成音频
      *
-     * @param bookEntityMap  整本书的内容
-     * @param bookParams 书文件夹名称
+     * @param bookEntityMap 整本书的内容
+     * @param bookParams    书文件夹名称
      */
     private static void checkSegmentVoice(Map<String, List<BookAreaEntity>> bookEntityMap, BookParams bookParams) {
         int index = -1;
         // 整本书，按页遍历
         for (String page : bookEntityMap.keySet()) {
             // 当前页码转换为整数
-            int pageNum = ExcelProcessor.getPageNum(page);
+            int pageNum = ExcelProcessorKehu.getPageNum(page);
             // 当前页面对应的asm文件（一对一）
             String asmFilePath = bookParams.getSOURCE_ASM_FOLDER() + page + ".ASM";
-            AsmInfoEntity asmInfoEntity = AsmProcessor.readAsmFile(asmFilePath);
+            AsmInfoEntity asmInfoEntity = AsmProcessorKehu.readAsmFile(asmFilePath);
             Map<Integer, List<AsmEntity>> asmMap = asmInfoEntity.getAsmEntityMap();
             int type = asmInfoEntity.getType();
             // 当前页面对应的图片（一对一）
@@ -119,14 +117,12 @@ public class CheckProcessor {
             for (BookAreaEntity bookEntity : bookEntities) {
                 // asm文件中，一个框号，可能对应多个域（相当于excel中的行）——框号，对应多个音频文件——音频内容相同，域坐标不同）
                 int kuangNum = 0;
-                try{
+                try {
                     kuangNum = Integer.valueOf(bookEntity.getAreaId());
-                }catch (Exception e){
-                    System.err.println(String.format("[%s][框号转数字错误][%s]",bookParams.getBookName(), bookEntity.toString()));
+                } catch (Exception e) {
+                    System.err.println(String.format("[%s][框号转数字错误][%s]", bookParams.getBookName(), bookEntity.toString()));
                     continue;
                 }
-
-
                 List<AsmEntity> asmEntities = asmMap.get(kuangNum);
                 if (CollectionUtils.isEmpty(asmEntities)) {
                     System.err.println(String.format("[%s]无asm信息[%s]", bookParams.getBookName(), bookEntity));
@@ -136,10 +132,10 @@ public class CheckProcessor {
                     index++;
                     String name = String.format("%d-%s-%s-%s-%s-%d"
                             , pageNum
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getTopLeftX(), type) / (double) 1, 6)
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getTopLeftY(), type) / (double) 1, 6)
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getLowerRightX(), type) / (double) 1, 6)
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getLowerRightY(), type) / (double) 1, 6)
+                            , NumberUtil.roundStr(Integer.valueOf(asmEntity.getTopLeftX()), 6)
+                            , NumberUtil.roundStr(Integer.valueOf(asmEntity.getTopLeftY()), 6)
+                            , NumberUtil.roundStr(Integer.valueOf(asmEntity.getLowerRightX()), 6)
+                            , NumberUtil.roundStr(Integer.valueOf(asmEntity.getLowerRightY()), 6)
                             , index);
                 }
             }
@@ -180,7 +176,7 @@ public class CheckProcessor {
                 System.out.println(picName);
                 continue;
             }
-            int pageNum = ExcelProcessor.getPageNum(picName.toUpperCase().replace(".JPG", ""));
+            int pageNum = ExcelProcessorKehu.getPageNum(picName.toUpperCase().replace(".JPG", ""));
         }
     }
 }

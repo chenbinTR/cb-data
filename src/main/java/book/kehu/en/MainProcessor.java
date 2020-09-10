@@ -39,18 +39,18 @@ public class MainProcessor {
                 BookParams bookParam = new BookParams(seriesName, bookName, false);
                 // 读取excel，map中key是页码，value是页对应的域s，读取excel的同时，判断excel中数据是否正常，并进行格式的归一化
                 String excelFilePath = BookUtils.getExcelFilePath(bookParam.getSOURCE_BOOK_FOLDER());
-                Map<String, List<BookAreaEntity>> pageBookEntityMap = ExcelProcessor.readBookAreaEntity(excelFilePath, bookParam);
+                Map<String, List<BookAreaEntity>> pageBookEntityMap = ExcelProcessorKehu.readBookAreaEntity(excelFilePath, bookParam);
 
                 if (1 == isCheck) {
                     // 验证音频文件是否存在
-                    CheckProcessor.checkVoice(pageBookEntityMap, bookParam);
+                    CheckProcessorKehu.checkVoice(pageBookEntityMap, bookParam);
                 } else {
                     // 图片
                     ImgProcessor.imgProcess(bookParam);
                     // 按页合成mp3和文本
-                    VoiceProcessor.combinVoiceTextByPage(pageBookEntityMap, bookParam);
+                    VoiceProcessorKehu.combinVoiceTextByPage(pageBookEntityMap, bookParam);
                     // 按域生成mp3和文本
-                    VoiceProcessor.combinVoiceTextBySegment(pageBookEntityMap, bookParam);
+                    VoiceProcessorKehu.combinVoiceTextBySegment(pageBookEntityMap, bookParam);
 
                     //删除临时文件夹
                     FileUtil.del(bookParam.getDEST_AUDIO_FOLDER());

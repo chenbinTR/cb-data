@@ -26,7 +26,7 @@ import java.util.Map;
  * @date 2019-12-16
  * @see
  */
-public class VoiceProcessor {
+public class VoiceProcessorKehu {
     /**
      * 封面音频、文字处理
      *
@@ -50,7 +50,7 @@ public class VoiceProcessor {
             String destEnFaceMa3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_FOLDER() + "0.mp3";
             String destChFaceMa3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_CH_FOLDER() + "0.mp3";
             Utils.combinMp3File(Arrays.asList(faceMp3FilePath), destChFaceMa3FilePath);
-            if(!bookParams.isCh()) {
+            if (!bookParams.isCh()) {
                 Utils.combinMp3File(Arrays.asList(faceMp3FilePath), destEnFaceMa3FilePath);
                 Utils.writeToTxt(bookParams.getDEST_TEXT_TEXTBYPAGE_FOLDER() + "0.txt", textMp3Content);
             }
@@ -72,7 +72,7 @@ public class VoiceProcessor {
         // 处理内页音频
         for (String page : bookEntityMap.keySet()) {
             // 获取数字页码
-            int pageNum = ExcelProcessor.getPageNum(page);
+            int pageNum = ExcelProcessorKehu.getPageNum(page);
             List<String> enIdList = new ArrayList<>();
             // 单页音频合成
             List<String> sourceEnMp3FileList = new ArrayList<>();
@@ -98,14 +98,14 @@ public class VoiceProcessor {
             // 目标单页音频
             String destEnPageMp3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_FOLDER() + pageNum + ".mp3";
             String destChPageMp3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_CH_FOLDER() + pageNum + ".mp3";
-            if(!bookParams.isCh()){
+            if (!bookParams.isCh()) {
                 Utils.combinMp3File(sourceEnMp3FileList, destEnPageMp3FilePath);
             }
             Utils.combinMp3File(sourceChMp3FileList, destChPageMp3FilePath);
             // 目标单页文本
             String destEnPageTextFilePath = bookParams.getDEST_TEXT_TEXTBYPAGE_FOLDER() + pageNum + ".txt";
             String destChPageTextFilePath = bookParams.getDEST_TEXT_TEXTBYPAGE_CH_FOLDER() + pageNum + ".txt";
-            if(!bookParams.isCh()) {
+            if (!bookParams.isCh()) {
                 Utils.writeToTxt(destEnPageTextFilePath, sbEn.toString().trim());
             }
             Utils.writeToTxt(destChPageTextFilePath, sbCh.toString().trim());
@@ -124,10 +124,10 @@ public class VoiceProcessor {
         // 按页遍历
         for (String page : bookEntityMap.keySet()) {
             // 当前页码转换为整数
-            int pageNum = ExcelProcessor.getPageNum(page);
+            int pageNum = ExcelProcessorKehu.getPageNum(page);
             // 当前页面对应的asm文件（一对一）
             String asmFilePath = bookParams.getSOURCE_ASM_FOLDER() + page + ".ASM";
-            AsmInfoEntity asmInfoEntity = AsmProcessor.readAsmFile(asmFilePath);
+            AsmInfoEntity asmInfoEntity = AsmProcessorKehu.readAsmFile(asmFilePath);
             Map<Integer, List<AsmEntity>> asmMap = asmInfoEntity.getAsmEntityMap();
             int type = asmInfoEntity.getType();
             // 当前页面对应的图片（一对一）
@@ -197,22 +197,26 @@ public class VoiceProcessor {
                     index++;
                     String name = String.format("%d-%s-%s-%s-%s-%d"
                             , pageNum
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getTopLeftX(), type) / (double) imgX, 6)
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getTopLeftY(), type) / (double) imgY, 6)
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getLowerRightX(), type) / (double) imgX, 6)
-                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getLowerRightY(), type) / (double) imgY, 6)
+//                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getTopLeftX(), type) / (double) imgX, 6)
+                            , NumberUtil.roundStr(Double.valueOf(asmEntity.getTopLeftX()) / (double) imgX, 6)
+//                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getTopLeftY(), type) / (double) imgY, 6)
+                            , NumberUtil.roundStr(Double.valueOf(asmEntity.getTopLeftY()) / (double) imgY, 6)
+//                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getLowerRightX(), type) / (double) imgX, 6)
+                            , NumberUtil.roundStr(Double.valueOf(asmEntity.getLowerRightX()) / (double) imgX, 6)
+//                            , NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue(asmEntity.getLowerRightY(), type) / (double) imgY, 6)
+                            , NumberUtil.roundStr(Double.valueOf(asmEntity.getLowerRightY()) / (double) imgY, 6)
                             , index);
                     // 音频
                     String destENMp3FileName = bookParams.getDEST_AUDIO_AUDIOSEGMENTS_FOLDER() + name + ".mp3";
                     String destCHMp3FileName = bookParams.getDEST_AUDIO_AUDIOSEGMENTS_CH_FOLDER() + name + ".mp3";
-                    if(!bookParams.isCh()) {
+                    if (!bookParams.isCh()) {
                         Utils.combinMp3File(sourceMp3ENList, destENMp3FileName);
                     }
                     Utils.combinMp3File(sourceMp3CHList, destCHMp3FileName);
 
                     // 文本,一个音频对应一个文本
                     String destENTextsegmentsFilePath = bookParams.getDEST_TEXT_TEXTSEGMENTS_FOLDER() + pageNum + "-" + index + ".txt";
-                    if(!bookParams.isCh()) {
+                    if (!bookParams.isCh()) {
                         Utils.writeToTxt(destENTextsegmentsFilePath, bookEntity.getEnContent().trim());
                     }
                     String destCHTextsegmentsFilePath = bookParams.getDEST_TEXT_TEXTSEGMENTS_CH_FOLDER() + pageNum + "-" + index + ".txt";

@@ -51,7 +51,6 @@ public class ExcelProcessor {
         for (int i=0; i<excelEntityList.size();i++) {
             ExcelEntity excelEntity = excelEntityList.get(i);
             String areaId = Convert.toDBC(excelEntity.getValue1());
-            String role = excelEntity.getValue2();
             String enId = excelEntity.getValue3();
             String enContent = excelEntity.getValue4();
             String chId = excelEntity.getValue5();
@@ -80,7 +79,7 @@ public class ExcelProcessor {
             bookEntity.setChId(chId);
             bookEntity.setPage(page);
             bookEntity.setEnContent(enContent);
-            bookEntity.setRole(role);
+//            bookEntity.setRole(role);
 
             // 判断一页结束
             if (StringUtils.isBlank(areaId+enId+enId+chContent+chId+chContent)
@@ -137,7 +136,6 @@ public class ExcelProcessor {
         for (int i=0; i<excelEntityList.size();i++) {
             ExcelEntity excelEntity = excelEntityList.get(i);
             String areaId = Convert.toDBC(excelEntity.getValue1());
-            String role = excelEntity.getValue2();
             String enId = excelEntity.getValue3();
             String enContent = excelEntity.getValue4();
             String chId = excelEntity.getValue5();
@@ -171,7 +169,6 @@ public class ExcelProcessor {
             bookEntity.setChId(chId);
             bookEntity.setPage(page);
             bookEntity.setEnContent(enContent);
-            bookEntity.setRole(role);
 
             // 判断一页结束
             if (StringUtils.isBlank(areaId+enId+enId+chContent+chId+chContent)

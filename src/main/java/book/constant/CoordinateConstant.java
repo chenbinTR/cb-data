@@ -1,5 +1,6 @@
 package book.constant;
 
+import cn.hutool.core.util.NumberUtil;
 import utils.Utils;
 
 import java.util.HashMap;
@@ -39,6 +40,11 @@ public class CoordinateConstant {
             String[] items = line.split("\t");
             coordinateMapNew.put(items[0].trim(), Integer.valueOf(items[2].substring(0, 4)));
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(coordinateMap.toString());
+        System.out.println(NumberUtil.roundStr((double) CoordinateConstant.getCoordinateValue("X1471", 1) / (double) 1, 6));
     }
     /**
      * 获取坐标的映射关系
