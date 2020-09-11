@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
+import java.rmi.ServerError;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +51,7 @@ public class VoiceProcessor {
             String destEnFaceMa3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_FOLDER() + "0.mp3";
             String destChFaceMa3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_CH_FOLDER() + "0.mp3";
             Utils.combinMp3File(Arrays.asList(faceMp3FilePath), destChFaceMa3FilePath);
-            if(!bookParams.isCh()) {
+            if (!bookParams.isCh()) {
                 Utils.combinMp3File(Arrays.asList(faceMp3FilePath), destEnFaceMa3FilePath);
                 Utils.writeToTxt(bookParams.getDEST_TEXT_TEXTBYPAGE_FOLDER() + "0.txt", textMp3Content);
             }
@@ -98,14 +99,14 @@ public class VoiceProcessor {
             // 目标单页音频
             String destEnPageMp3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_FOLDER() + pageNum + ".mp3";
             String destChPageMp3FilePath = bookParams.getDEST_AUDIO_AUDIOBYPAGE_CH_FOLDER() + pageNum + ".mp3";
-            if(!bookParams.isCh()){
+            if (!bookParams.isCh()) {
                 Utils.combinMp3File(sourceEnMp3FileList, destEnPageMp3FilePath);
             }
             Utils.combinMp3File(sourceChMp3FileList, destChPageMp3FilePath);
             // 目标单页文本
             String destEnPageTextFilePath = bookParams.getDEST_TEXT_TEXTBYPAGE_FOLDER() + pageNum + ".txt";
             String destChPageTextFilePath = bookParams.getDEST_TEXT_TEXTBYPAGE_CH_FOLDER() + pageNum + ".txt";
-            if(!bookParams.isCh()) {
+            if (!bookParams.isCh()) {
                 Utils.writeToTxt(destEnPageTextFilePath, sbEn.toString().trim());
             }
             Utils.writeToTxt(destChPageTextFilePath, sbCh.toString().trim());
@@ -160,14 +161,22 @@ public class VoiceProcessor {
                 // 英文音频源文件集合
                 if (CollectionUtils.isNotEmpty(bookEntity.getEnIDs())) {
                     for (String enId : bookEntity.getEnIDs()) {
+                        if (StringUtils.isBlank(enId)) {
+                            System.err.println("英文音频ID空" + bookEntity.toString());
+                            continue;
+                        }
                         // 当前域对应的mp3文件
                         String sourceMp3FilePath = bookParams.getSOURCE_VOICE_FOLDER() + enId + ".mp3";
                         sourceMp3ENList.add(sourceMp3FilePath);
                     }
                 } else {
-                    // 当前域对应的英文mp3文件
-                    String sourceMp3FilePath = bookParams.getSOURCE_VOICE_FOLDER() + bookEntity.getEnId() + ".mp3";
-                    sourceMp3ENList.add(sourceMp3FilePath);
+                    if (StringUtils.isBlank(bookEntity.getEnId())) {
+                        System.err.println("英文音频ID空" + bookEntity.toString());
+                    } else {
+                        // 当前域对应的英文mp3文件
+                        String sourceMp3FilePath = bookParams.getSOURCE_VOICE_FOLDER() + bookEntity.getEnId() + ".mp3";
+                        sourceMp3ENList.add(sourceMp3FilePath);
+                    }
                 }
 
                 // 中文音频源文件集合
@@ -205,14 +214,14 @@ public class VoiceProcessor {
                     // 音频
                     String destENMp3FileName = bookParams.getDEST_AUDIO_AUDIOSEGMENTS_FOLDER() + name + ".mp3";
                     String destCHMp3FileName = bookParams.getDEST_AUDIO_AUDIOSEGMENTS_CH_FOLDER() + name + ".mp3";
-                    if(!bookParams.isCh()) {
+                    if (!bookParams.isCh()) {
                         Utils.combinMp3File(sourceMp3ENList, destENMp3FileName);
                     }
                     Utils.combinMp3File(sourceMp3CHList, destCHMp3FileName);
 
                     // 文本,一个音频对应一个文本
                     String destENTextsegmentsFilePath = bookParams.getDEST_TEXT_TEXTSEGMENTS_FOLDER() + pageNum + "-" + index + ".txt";
-                    if(!bookParams.isCh()) {
+                    if (!bookParams.isCh()) {
                         Utils.writeToTxt(destENTextsegmentsFilePath, bookEntity.getEnContent().trim());
                     }
                     String destCHTextsegmentsFilePath = bookParams.getDEST_TEXT_TEXTSEGMENTS_CH_FOLDER() + pageNum + "-" + index + ".txt";
