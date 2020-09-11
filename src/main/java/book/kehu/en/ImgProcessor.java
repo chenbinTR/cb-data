@@ -43,7 +43,7 @@ public class ImgProcessor {
             if (!imgName.toUpperCase().contains(".JPG")) {
                 continue;
             }
-            int pageNum = ExcelProcessor.getPageNum(imgName.toUpperCase().replace(".JPG", ""));
+            int pageNum = ExcelProcessorKehu.getPageNum(imgName.toUpperCase().replace(".JPG", ""));
             // 拷贝+重命名
             Utils.combinFile(Arrays.asList(imgFolderPath + imgName), destImgFolder + pageNum + ".jpg");
         }

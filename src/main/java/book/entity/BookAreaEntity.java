@@ -24,6 +24,6 @@ public class BookAreaEntity {
     private String chId;
     private String chContent;
     private String page;
-    private String role;
+//    private String role;
 
 }
