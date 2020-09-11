@@ -22,7 +22,7 @@ public class MainProcessor {
     /**
      * 预检验开关
      */
-    private static int isCheck = 1;
+    private static int isCheck = 0;
     /**
      * 待处理的套书文件夹名称集合
      */

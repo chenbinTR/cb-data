@@ -4,6 +4,9 @@ import book.entity.AsmEntity;
 import book.entity.AsmInfoEntity;
 import utils.Utils;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,8 +21,6 @@ import java.util.regex.Pattern;
  * @since
  */
 public class AsmProcessorKehu {
-    static final Pattern PATTERN = Pattern.compile("(_)(\\d+)(_P\\d+[A-Z]V|V_)(_BEGIN:)");
-
     public static void main(String[] args) {
         readAsmFile("E:\\BOOK_DATA\\已处理\\已修正\\人教-test\\三年级\\coordsrc\\P001V.asm");
     }
@@ -31,7 +32,7 @@ public class AsmProcessorKehu {
      * @return key：域号
      * value：矩形集合
      */
-    public static AsmInfoEntity readAsmFile(String asmFilePath) {
+    static AsmInfoEntity readAsmFile(String asmFilePath) {
         List<String> lines = Utils.readFileToList(asmFilePath);
         Map<Integer, List<AsmEntity>> asmMap = new LinkedHashMap<>();
         List<AsmEntity> asmEntityList = new ArrayList<>();
@@ -42,17 +43,15 @@ public class AsmProcessorKehu {
             if (line.endsWith("_BEGIN:")) {
                 isInDomain = true;
                 // 提取框号
-//                Matcher h = PATTERN.matcher(line);
-//                while (h.find()) {
                 String kuangNumStr = line.replaceFirst("_", "");
                 kuangNumStr = kuangNumStr.substring(0, kuangNumStr.indexOf("_"));
                 kuangNum = Integer.valueOf(kuangNumStr);
-//                }
             }
             if (!isInDomain) {
                 continue;
             }
             if (line.toUpperCase().indexOf("X") > -1 && line.toUpperCase().indexOf("Y") > -1) {
+                line = line.substring(line.indexOf("X"));
                 String content = line
                         .replace("DW", "")
                         .replace(" ", "")
@@ -60,11 +59,28 @@ public class AsmProcessorKehu {
                         .replace("+$8000", "")
                         .trim();
                 String[] xy = content.split(",");
+
+                List<String> xyNew = new ArrayList<>();
+                for (String s : xy) {
+                    String tmp = s;
+                    if(s.indexOf("+")>-1 || s.indexOf("-")>-1){
+                        String re = s.replace("X","").replace("Y","");
+                        ScriptEngine se = new ScriptEngineManager().getEngineByName("JavaScript");
+                        try {
+                            tmp = se.eval(re).toString();
+                        } catch (ScriptException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    xyNew.add(tmp);
+                }
+
+                
                 AsmEntity asmEntity = new AsmEntity();
-                asmEntity.setTopLeftX(xy[0].toLowerCase().replace("x", "").replace("y", ""));
-                asmEntity.setTopLeftY(xy[1].toLowerCase().replace("x", "").replace("y", ""));
-                asmEntity.setLowerRightX(xy[2].toLowerCase().replace("x", "").replace("y", ""));
-                asmEntity.setLowerRightY(xy[3].toLowerCase().replace("x", "").replace("y", ""));
+                asmEntity.setTopLeftX(xyNew.get(0).toLowerCase().replace("x", "").replace("y", ""));
+                asmEntity.setTopLeftY(xyNew.get(1).toLowerCase().replace("x", "").replace("y", ""));
+                asmEntity.setLowerRightX(xyNew.get(2).toLowerCase().replace("x", "").replace("y", ""));
+                asmEntity.setLowerRightY(xyNew.get(3).toLowerCase().replace("x", "").replace("y", ""));
 
                 asmEntityList.add(asmEntity);
             }

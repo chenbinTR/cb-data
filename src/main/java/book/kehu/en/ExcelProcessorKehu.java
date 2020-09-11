@@ -51,7 +51,7 @@ public class ExcelProcessorKehu {
         PAGE_NUM_MAP.clear();
         // 读取excel文件
         List<ExcelEntity> excelEntityList = BookUtils.readXml(path, 0);
-        Map<String, List<BookAreaEntity>> bookMap = new LinkedHashMap<>();
+        Map<String, List<BookAreaEntity>> bookMap = new TreeMap<>();
         for (int i = 0; i < excelEntityList.size(); i++) {
             ExcelEntity excelEntity = excelEntityList.get(i);
             String areaId = Convert.toDBC(excelEntity.getValue2());
@@ -102,37 +102,48 @@ public class ExcelProcessorKehu {
 
         // 读取excel文件
         List<ExcelEntity> excelEntityList = BookUtils.readXml(path, 0);
-        Map<String, List<BookAreaEntity>> bookMap = new LinkedHashMap<>();
+        Map<String, List<BookAreaEntity>> bookMap = new TreeMap<>();
         for (int i = 0; i < excelEntityList.size(); i++) {
             ExcelEntity excelEntity = excelEntityList.get(i);
             String areaId = Convert.toDBC(excelEntity.getValue2());
             if (StringUtils.isBlank(areaId) || areaId.trim().equals("框号")) {
                 continue;
             }
-            String enId = "";
-            String enContent = "";
             String chId = excelEntity.getValue4();
+            String enId = chId;
             String chContent = excelEntity.getValue5();
+            String enContent = chContent;
             String page = excelEntity.getValue3();
             // 如果有中文内容，没有英文内容，则英文内容与中文内容相同
-            if (StringUtils.isNotBlank(chId) && StringUtils.isNotBlank(chContent)) {
-                enId = chId;
-                enContent = chContent;
-            } else {
+            if (StringUtils.isAnyBlank(chId ,chContent)) {
                 System.err.println("缺少语文音频或内容-行序号：" + excelEntity.getValue0());
+                continue;
             }
-            BookAreaEntity bookEntity = new BookAreaEntity();
-            bookEntity.setAreaId(areaId);
-            bookEntity.setEnId(enId);
-            bookEntity.setChContent(chContent);
-            bookEntity.setChId(chId);
-            bookEntity.setPage(page);
-            bookEntity.setEnContent(enContent);
-            List<BookAreaEntity> bookAreaEntityList = (List<BookAreaEntity>) MapUtils.getObject(bookMap, page, new ArrayList<>());
-            bookAreaEntityList.add(bookEntity);
-            bookMap.put(page, bookAreaEntityList);
-            if (StringUtils.isAllBlank(enId, enContent, chId, chContent)) {
-                System.err.println("中英文内容均为空");
+            if(areaId.contains("+")){
+                String[] areas = areaId.split("\\+");
+                for (String area : areas) {
+                    BookAreaEntity bookEntity = new BookAreaEntity();
+                    bookEntity.setAreaId(area);
+                    bookEntity.setEnId(enId);
+                    bookEntity.setChContent(chContent);
+                    bookEntity.setChId(chId);
+                    bookEntity.setPage(page);
+                    bookEntity.setEnContent(enContent);
+                    List<BookAreaEntity> bookAreaEntityList = (List<BookAreaEntity>) MapUtils.getObject(bookMap, page, new ArrayList<>());
+                    bookAreaEntityList.add(bookEntity);
+                    bookMap.put(page, bookAreaEntityList);
+                }
+            }else{
+                BookAreaEntity bookEntity = new BookAreaEntity();
+                bookEntity.setAreaId(areaId);
+                bookEntity.setEnId(enId);
+                bookEntity.setChContent(chContent);
+                bookEntity.setChId(chId);
+                bookEntity.setPage(page);
+                bookEntity.setEnContent(enContent);
+                List<BookAreaEntity> bookAreaEntityList = (List<BookAreaEntity>) MapUtils.getObject(bookMap, page, new ArrayList<>());
+                bookAreaEntityList.add(bookEntity);
+                bookMap.put(page, bookAreaEntityList);
             }
         }
         int pageNum = 0;
