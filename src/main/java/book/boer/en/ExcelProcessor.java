@@ -23,15 +23,17 @@ public class ExcelProcessor {
 
     /**
      * 获取页码和数字的对应关系
+     *
      * @param page
      * @return
      */
-    public static Integer getPageNum(String page){
-        if(PAGE_NUM_MAP.get(page.toUpperCase()) == null){
-            System.err.println("不存在页码对应关系"+page);
+    public static Integer getPageNum(String page) {
+        if (PAGE_NUM_MAP.get(page.toUpperCase()) == null) {
+            System.err.println("不存在页码对应关系" + page);
         }
         return PAGE_NUM_MAP.get(page);
     }
+
     /**
      * 读取excel内容
      *
@@ -41,23 +43,22 @@ public class ExcelProcessor {
      */
     public synchronized static Map<String, List<BookAreaEntity>> readBookAreaEntity(String path, BookParams bookParams) {
         PAGE_NUM_MAP.clear();
-         // 读取excel文件
+        // 读取excel文件
         List<ExcelEntity> excelEntityList = BookUtils.readXml(path, 0);
 
         Map<String, List<BookAreaEntity>> bookMap = new LinkedHashMap<>();
         String page = "";
         int pageNum = 0;
         List<BookAreaEntity> bookEntityList = new ArrayList<>();
-        for (int i=0; i<excelEntityList.size();i++) {
+        for (int i = 0; i < excelEntityList.size(); i++) {
             ExcelEntity excelEntity = excelEntityList.get(i);
             String areaId = Convert.toDBC(excelEntity.getValue1());
-            String role = excelEntity.getValue2();
             String enId = excelEntity.getValue3();
             String enContent = excelEntity.getValue4();
             String chId = excelEntity.getValue5();
             String chContent = excelEntity.getValue6();
             // 如果有中文内容，没有英文内容，则英文内容与中文内容相同
-            if(StringUtils.isBlank(enId)&&StringUtils.isBlank(enContent)&&StringUtils.isNotBlank(chId)&&StringUtils.isNotBlank(chContent)){
+            if (StringUtils.isBlank(enId) && StringUtils.isBlank(enContent) && StringUtils.isNotBlank(chId) && StringUtils.isNotBlank(chContent)) {
                 enId = chId;
                 enContent = chContent;
             }
@@ -66,7 +67,7 @@ public class ExcelProcessor {
                 continue;
             }
             // 数据异常判断
-            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent+enId+chId+chContent)) {
+            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent + enId + chId + chContent)) {
                 System.err.println(String.format("[Excel数据异常][%s][%s]", path, excelEntity));
             }
             if (StringUtils.isBlank(page)) {
@@ -80,12 +81,11 @@ public class ExcelProcessor {
             bookEntity.setChId(chId);
             bookEntity.setPage(page);
             bookEntity.setEnContent(enContent);
-            bookEntity.setRole(role);
 
             // 判断一页结束
-            if (StringUtils.isBlank(areaId+enId+enId+chContent+chId+chContent)
-                    || i == excelEntityList.size()-1) {
-                if(i == excelEntityList.size()-1){
+            if (StringUtils.isBlank(areaId + enId + enId + chContent + chId + chContent)
+                    || i == excelEntityList.size() - 1) {
+                if (i == excelEntityList.size() - 1) {
                     bookEntityList.add(bookEntity);
                 }
                 if (bookEntityList.size() > 0) {
@@ -97,13 +97,20 @@ public class ExcelProcessor {
                 page = "";
                 continue;
             }
-            if(StringUtils.isAllBlank(enId,enContent,chId,chContent)){
-                System.err.println("中英文内容均为空");
-            }
             bookEntityList.add(bookEntity);
         }
+
+        bookMap.forEach((k, v) -> {
+            v.forEach(entity -> {
+                if (StringUtils.isBlank(entity.getEnId()) || StringUtils.isBlank(entity.getEnContent())) {
+                    System.err.println("英文内容不完整：" + entity.toString());
+                }
+            });
+        });
+
         return bookMap;
     }
+
     /**
      * 对每页的内容进行归一化
      * 3中特殊情况
@@ -134,20 +141,19 @@ public class ExcelProcessor {
         String page = "";
         int pageNum = 0;
         List<BookAreaEntity> bookEntityList = new ArrayList<>();
-        for (int i=0; i<excelEntityList.size();i++) {
+        for (int i = 0; i < excelEntityList.size(); i++) {
             ExcelEntity excelEntity = excelEntityList.get(i);
             String areaId = Convert.toDBC(excelEntity.getValue1());
-            String role = excelEntity.getValue2();
             String enId = excelEntity.getValue3();
             String enContent = excelEntity.getValue4();
             String chId = excelEntity.getValue5();
             String chContent = excelEntity.getValue6();
 
             // 如果有中文内容，没有英文内容，则英文内容与中文内容相同
-            if(StringUtils.isAllBlank(chId,chContent)){
+            if (StringUtils.isAllBlank(chId, chContent)) {
                 chId = enId;
                 chContent = enContent;
-            }else{
+            } else {
                 enId = chId;
                 enContent = chContent;
             }
@@ -157,7 +163,7 @@ public class ExcelProcessor {
                 continue;
             }
             // 数据异常判断
-            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent+enId+chId+chContent)) {
+            if (StringUtils.isBlank(areaId) && StringUtils.isNotBlank(enContent + enId + chId + chContent)) {
                 System.err.println(String.format("[Excel数据异常][%s][%s]", path, excelEntity));
             }
             if (StringUtils.isBlank(page)) {
@@ -171,12 +177,11 @@ public class ExcelProcessor {
             bookEntity.setChId(chId);
             bookEntity.setPage(page);
             bookEntity.setEnContent(enContent);
-            bookEntity.setRole(role);
 
             // 判断一页结束
-            if (StringUtils.isBlank(areaId+enId+enId+chContent+chId+chContent)
-                    || i == excelEntityList.size()-1) {
-                if(i == excelEntityList.size()-1){
+            if (StringUtils.isBlank(areaId + enId + enId + chContent + chId + chContent)
+                    || i == excelEntityList.size() - 1) {
+                if (i == excelEntityList.size() - 1) {
                     bookEntityList.add(bookEntity);
                 }
                 if (bookEntityList.size() > 0) {
@@ -188,7 +193,7 @@ public class ExcelProcessor {
                 page = "";
                 continue;
             }
-            if(StringUtils.isAllBlank(chId, chContent)){
+            if (StringUtils.isAllBlank(chId, chContent)) {
                 System.err.println("中文内容列空");
             }
             bookEntityList.add(bookEntity);
