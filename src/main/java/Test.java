@@ -1,3 +1,5 @@
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import utils.SymmetricEncoder;
 
 import java.io.IOException;
@@ -34,10 +36,12 @@ public class Test {
 //
 //        LocalDate date = LocalDate.now();
 //        System.out.println(date);
-
-        System.out.println(Integer.valueOf("001"));
-
+//        System.out.println(Integer.valueOf("001"));
 //        ThreadLocalRandom.current().nextInt(0);
+        JSONArray ja = new JSONArray();
+        ja.add("1");
+        ja.add("2");
 
+        System.out.println(ja.toArray(new String[0]));
     }
 }

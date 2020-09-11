@@ -63,23 +63,32 @@ public class ExcelProcessorKehu {
             String chId = excelEntity.getValue6();
             String chContent = excelEntity.getValue7();
             String page = excelEntity.getValue3();
-            // 如果有中文内容，没有英文内容，则英文内容与中文内容相同
-//            if(StringUtils.isBlank(enId)&&StringUtils.isBlank(enContent)&&StringUtils.isNotBlank(chId)&&StringUtils.isNotBlank(chContent)){
-//                enId = chId;
-//                enContent = chContent;
-//            }
-            BookAreaEntity bookEntity = new BookAreaEntity();
-            bookEntity.setAreaId(areaId);
-            bookEntity.setEnId(enId);
-            bookEntity.setChContent(chContent);
-            bookEntity.setChId(chId);
-            bookEntity.setPage(page);
-            bookEntity.setEnContent(enContent);
-            List<BookAreaEntity> bookAreaEntityList = (List<BookAreaEntity>) MapUtils.getObject(bookMap, page, new ArrayList<>());
-            bookAreaEntityList.add(bookEntity);
-            bookMap.put(page, bookAreaEntityList);
-            if (StringUtils.isAllBlank(enId, enContent, chId, chContent)) {
-                System.err.println("中英文内容均为空");
+
+            if (areaId.contains("+")) {
+                String[] areas = areaId.split("\\+");
+                for (String area : areas) {
+                    BookAreaEntity bookEntity = new BookAreaEntity();
+                    bookEntity.setAreaId(area);
+                    bookEntity.setEnId(enId);
+                    bookEntity.setChContent(chContent);
+                    bookEntity.setChId(chId);
+                    bookEntity.setPage(page);
+                    bookEntity.setEnContent(enContent);
+                    List<BookAreaEntity> bookAreaEntityList = (List<BookAreaEntity>) MapUtils.getObject(bookMap, page, new ArrayList<>());
+                    bookAreaEntityList.add(bookEntity);
+                    bookMap.put(page, bookAreaEntityList);
+                }
+            } else {
+                BookAreaEntity bookEntity = new BookAreaEntity();
+                bookEntity.setAreaId(areaId);
+                bookEntity.setEnId(enId);
+                bookEntity.setChContent(chContent);
+                bookEntity.setChId(chId);
+                bookEntity.setPage(page);
+                bookEntity.setEnContent(enContent);
+                List<BookAreaEntity> bookAreaEntityList = (List<BookAreaEntity>) MapUtils.getObject(bookMap, page, new ArrayList<>());
+                bookAreaEntityList.add(bookEntity);
+                bookMap.put(page, bookAreaEntityList);
             }
         }
         int pageNum = 0;
@@ -115,11 +124,11 @@ public class ExcelProcessorKehu {
             String enContent = chContent;
             String page = excelEntity.getValue3();
             // 如果有中文内容，没有英文内容，则英文内容与中文内容相同
-            if (StringUtils.isAnyBlank(chId ,chContent)) {
+            if (StringUtils.isAnyBlank(chId, chContent)) {
                 System.err.println("缺少语文音频或内容-行序号：" + excelEntity.getValue0());
                 continue;
             }
-            if(areaId.contains("+")){
+            if (areaId.contains("+")) {
                 String[] areas = areaId.split("\\+");
                 for (String area : areas) {
                     BookAreaEntity bookEntity = new BookAreaEntity();
@@ -133,7 +142,7 @@ public class ExcelProcessorKehu {
                     bookAreaEntityList.add(bookEntity);
                     bookMap.put(page, bookAreaEntityList);
                 }
-            }else{
+            } else {
                 BookAreaEntity bookEntity = new BookAreaEntity();
                 bookEntity.setAreaId(areaId);
                 bookEntity.setEnId(enId);
