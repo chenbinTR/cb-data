@@ -22,7 +22,7 @@ public class Test {
     private static SimpleDateFormat simFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static void main(String[] args) throws IOException {
-//        System.out.println(SymmetricEncoder.AESEncode("1"));
+        System.out.println(SymmetricEncoder.AESEncode("YIEK3ijSwfxYrINxvmPBLHXIEHlf7m"));
 //        Float f1 = 0.5672F;
 //        Float f2 = 0.5671F;
 //
