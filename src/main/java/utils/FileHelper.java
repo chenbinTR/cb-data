@@ -33,6 +33,28 @@ public class FileHelper {
         }
         return true;
     }
+
+    /**
+     * 判断要下载的文件是否存在
+     * @param downloadUrl
+     * @return
+     */
+    public static boolean isFileExist(String downloadUrl) {
+        try {
+            URL url = new URL(downloadUrl);
+            URLConnection connection = url.openConnection();
+            InputStream inputStream = connection.getInputStream();
+            byte[] bytes = new byte[1024];
+            if (inputStream.read(bytes) == -1) {
+                return false;
+            }
+            inputStream.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
     /**
      * 读文件(按行读取，保存到list中，读取文件全部内容)
      *
