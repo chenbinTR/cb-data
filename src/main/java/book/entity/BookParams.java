@@ -21,8 +21,8 @@ public class BookParams {
     /**
      * 根目录
      */
-//    private String root = "E:\\BOOK_DATA\\已处理\\已修正-加静音段\\";
-    private String root = "E:\\BOOK_DATA\\已处理\\已修正\\";
+    private String root = "E:\\BOOK_DATA\\已处理\\已修正-加静音段\\";
+//    private String root = "E:\\BOOK_DATA\\已处理\\已修正\\";
     private String SOURCE_COORDIATE_FILE = "E:\\BOOK_DATA\\已s处理\\DEFINE-32.H";
     private String SOURCE_COORDIATE_NEW_FILE = "E:\\BOOK_DATA\\已处理\\标准框2-DEFINE-00.H";
     private boolean isCh;

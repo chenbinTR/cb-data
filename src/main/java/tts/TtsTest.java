@@ -21,7 +21,11 @@ import java.util.Set;
 public class TtsTest {
     /**
      * -y 覆盖输出文件
-     *
+     * -i 设定输入流
+     * -f 设定输出格式
+     * -ar 设定采样率
+     * -ac 设定声音的Channel数
+     * -acodec 设定声音编解码器，未设定时则使用与输入流相同的编解码器
      */
     private final String TTS_URL = "";
     private TtsRequest ttsRequest;
@@ -39,11 +43,11 @@ public class TtsTest {
     }
     @Test
     public void testPcmRateTrans(){
-        Set<String> d = new HashSet<>();
         // 采样率转换
         try {
 //            Runtime.getRuntime().exec("ffmpeg -i Q:\\66be849e-cead-4f20-a84a-2d990bb47e24_dest.pcm -f s16le -acodec -ar 8000 -ac 1 Q:\\pcm8k.pcm");
-            Runtime.getRuntime().exec("ffmpeg -y -i Q:\\25.mp3 -libmp3lame -ac 1 Q:\\27.mp3");
+//            Runtime.getRuntime().exec("ffmpeg -y -i Q:\\25.mp3 -libmp3lame -ac 1 Q:\\27.mp3");
+            Runtime.getRuntime().exec("ffmpeg -y -i E:\\1.opus -f s16be -ac 1 E:\\27.pcm");
 //            Runtime.getRuntime().exec("ffmpeg -y -i Q:\\1.pcm -f s16be -ar 8000 -ac 1 -acodec pcm_s16be Q:\\2.pcm");
 //            Runtime.getRuntime().exec("ffmpeg -i \"concat:Q:\\6.mp3|Q:\\6.mp3|Q:\\6.mp3\" -acodec copy Q:\\output.mp3");
         } catch (IOException e) {

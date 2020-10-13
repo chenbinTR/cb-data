@@ -22,7 +22,7 @@ public class MainProcessor {
     /**
      * 待处理的套书文件夹名称集合`
      */
-    private static List<String> seriesNameList = Arrays.asList("北京小学英语");
+    private static List<String> seriesNameList = Arrays.asList("新版典范英语");
 //    private static List<String> seriesNameList;
 //    static{
 //        File file = new File("E:\\BOOK_DATA\\已处理\\已修正-加静音段\\英语");
