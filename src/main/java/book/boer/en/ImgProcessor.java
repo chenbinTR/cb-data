@@ -67,12 +67,17 @@ public class ImgProcessor {
                 break;
             }
         }
-        if(StringUtils.isBlank(faceImgPath)){
-            return;
-        }
         // 目标文件夹
         String destFacePath = bookParams.getDEST_BOOKIMG_FOLDER();
-        // 执行拷贝
-        Utils.combinFile(Arrays.asList(bookFolderPath + faceImgPath), destFacePath + "0.jpg");
+        if(StringUtils.isBlank(faceImgPath)){
+            faceImgPath = "E:\\BOOK_DATA\\timg.jpg";
+//            return;
+            // 执行拷贝
+            Utils.combinFile(Arrays.asList( faceImgPath), destFacePath + "0.jpg");
+        }else{
+            // 执行拷贝
+            Utils.combinFile(Arrays.asList(bookFolderPath + faceImgPath), destFacePath + "0.jpg");
+        }
+
     }
 }

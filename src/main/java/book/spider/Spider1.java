@@ -5,6 +5,7 @@ import cn.hutool.core.io.FileUtil;
 import img.ImageRemarkUtil;
 import img.ImgUtils;
 import utils.FileHelper;
+import utils.Utils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -39,9 +40,15 @@ public class Spider1 {
     }
 
     public static void main(String[] args) {
-        combinJpg();
+        ttt();
     }
-
+    private static void ttt(){
+        List<String> contents = Utils.readFileToList("E:\\new 1");
+        for (String content : contents) {
+            String[] items = content.split("\t");
+            FileHelper.downloadFile(items[0], new File("E:\\"+items[1].replace(" ","").trim()+".mp3"));
+        }
+    }
     private static void combinJpg() {
         grade_MAP.forEach((k, v) -> {
             String path = "E:\\西南师大版小学数学\\" + k + "\\";

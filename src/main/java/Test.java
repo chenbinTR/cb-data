@@ -1,5 +1,7 @@
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.time.DateUtils;
 import utils.SymmetricEncoder;
 
 import java.io.IOException;
@@ -20,9 +22,25 @@ public class Test {
     private static Date MEMBER_CREATE_DATE;
     private static Date createDate;
     private static SimpleDateFormat simFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+    private static final String test = "111";
     public static void main(String[] args) throws IOException {
+        Date date = new Date();
+        System.out.println(DateUtil.formatDateTime(date));
+        date = DateUtils.setHours(date, 0);
+        System.out.println(DateUtil.formatDateTime(date));
+        date = DateUtils.setMilliseconds(date, 0);
+        System.out.println(DateUtil.formatDateTime(date));
+        date = DateUtils.setMinutes(date, 0);
+        System.out.println(DateUtil.formatDateTime(date));
+        date = DateUtils.setSeconds(date, 0);
+        System.out.println(DateUtil.formatDateTime(date));
+        date = DateUtils.addDays(date, -1);
+        System.out.println(DateUtil.formatDateTime(date));
+
+
+
         System.out.println(SymmetricEncoder.AESEncode("YIEK3ijSwfxYrINxvmPBLHXIEHlf7m"));
+        System.out.println(test.replace("1", "df"));
 //        Float f1 = 0.5672F;
 //        Float f2 = 0.5671F;
 //
