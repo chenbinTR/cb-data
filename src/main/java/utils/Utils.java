@@ -170,46 +170,6 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-//        String cmd = "ffmpeg -i \"concat:%s\" -acodec copy %s";
-//
-//        // 判断源文件是否有效
-//        boolean isExistSource = false;
-//        for (String sourceFileName : sourceFileNames) {
-//            if (StringUtils.isBlank(sourceFileName)) {
-//                continue;
-//            }
-//            isExistSource = true;
-//        }
-//        if(!isExistSource){
-//            return;
-//        }
-//        String inputFiles = "";
-//        for (String sourceFileName : sourceFileNames) {
-//            if(StringUtils.isBlank(sourceFileName)){
-//                continue;
-//            }
-//            File f = new File(sourceFileName);
-//            if(!f.exists() || f.length()==0){
-//                System.err.println("文件不存在："+sourceFileName+destFileName);
-//                continue;
-//            }
-//            inputFiles+=sourceFileName;
-//            inputFiles+="|";
-//        }
-//        inputFiles = StringUtils.strip(inputFiles, "|");
-//        cmd = String.format(cmd, inputFiles, destFileName);
-//        try {
-//            Process process = Runtime.getRuntime().exec(cmd);
-//
-//            new RedirCmdStreamThread(process.getInputStream(), "INFO").start();
-//            new RedirCmdStreamThread(process.getErrorStream(),"ERR").start();
-//
-//            process.waitFor();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("ffmpeg error");
-//        }
         try {
             String destFolderNew = destFileName.substring(0, destFileName.lastIndexOf(File.separator) + 1).replace("Audio_1", "Audio");
             String fileName = destFileName.substring(destFileName.lastIndexOf(File.separator) + 1);
@@ -498,6 +458,39 @@ public class Utils {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public static void writeToTxt(String path, String... contents) {
+        int length = contents.length;
+        String content = "";
+        int index = 0;
+        for (String item : contents) {
+            index++;
+            if (index < length) {
+                content = content + item + "\t";
+            } else {
+                content = content + item;
+            }
+        }
+        File file = new File(path);
+        FileWriter fw = null;
+        BufferedWriter writer = null;
+        try {
+            fw = new FileWriter(file, true);
+            writer = new BufferedWriter(fw);
+            writer.write(content);
+            writer.newLine();
+            writer.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+                fw.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void writeToTxt(String path, String content) {
