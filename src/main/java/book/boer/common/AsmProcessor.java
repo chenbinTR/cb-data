@@ -1,4 +1,4 @@
-package book.boer.en;
+package book.boer.common;
 
 import book.entity.AsmEntity;
 import book.entity.AsmInfoEntity;

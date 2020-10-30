@@ -1,6 +1,7 @@
-package book.boer.en;
+package book.boer.common;
 
 import book.BookUtils;
+import book.boer.common.BookAreaNormalizeProcessor;
 import book.entity.BookAreaEntity;
 import book.entity.BookParams;
 import cn.hutool.core.convert.Convert;
@@ -103,7 +104,7 @@ public class ExcelProcessor {
         bookMap.forEach((k, v) -> {
             v.forEach(entity -> {
                 if (StringUtils.isBlank(entity.getEnId()) || StringUtils.isBlank(entity.getEnContent())) {
-                    System.err.println("英文内容不完整：" + entity.toString());
+                    System.err.println(path+"   英文内容不完整：" + entity.toString());
                 }
             });
         });

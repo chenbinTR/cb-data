@@ -3,10 +3,10 @@ package book.boer.ch;
 import book.BookUtils;
 import book.entity.BookAreaEntity;
 import book.entity.BookParams;
-import book.boer.en.CheckProcessor;
-import book.boer.en.ExcelProcessor;
-import book.boer.en.ImgProcessor;
-import book.boer.en.VoiceProcessor;
+import book.boer.common.CheckProcessor;
+import book.boer.common.ExcelProcessor;
+import book.boer.common.ImgProcessor;
+import book.boer.common.VoiceProcessor;
 import cn.hutool.core.io.FileUtil;
 
 import java.util.Arrays;
@@ -22,7 +22,7 @@ public class MainProcessor {
     /**
      * 预检验开关
      */
-    private static int isCheck = 0;
+    private static int isCheck = 1;
     /**
      * 待处理的套书文件夹名称集合
      */

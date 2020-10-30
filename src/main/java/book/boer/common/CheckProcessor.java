@@ -1,4 +1,4 @@
-package book.boer.en;
+package book.boer.common;
 
 import book.BookUtils;
 import book.constant.CoordinateConstant;
