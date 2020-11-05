@@ -1,5 +1,6 @@
 package watch;
 
+import cn.hutool.core.text.UnicodeUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -7,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import sun.nio.cs.UnicodeEncoder;
 import utils.Utils;
 
 import java.io.IOException;
@@ -23,10 +25,103 @@ import java.util.Set;
  * @date 2020/10/27
  */
 public class WatchSpider {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
 //        baiduIdiom();
-        get911();
+//        get911();
 //        filter911();
+        bihua3();
+    }
+
+    /**
+     * 获取 笔画顺序
+     * @throws UnsupportedEncodingException
+     */
+    private static void bihua3() throws UnsupportedEncodingException {
+        String url = "https://www.hanzi5.com/bishun/%s.html";
+        List<String> lines = Utils.readFileToList("E:\\1.txt");
+        for (String line : lines) {
+            try {
+                Thread.sleep(RandomUtil.randomInt(500, 3000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            String word = UnicodeUtil.toUnicode(line).replace("\\u","");
+            String urlTmp = String.format(url, word);
+            String order = "";
+            try {
+                Document doc = Jsoup.connect(urlTmp)
+                        .timeout(2000)
+                        .get();
+                Elements elements = doc.select(".hanzi5-article-hanzi-info").select("tr");
+                for (Element element : elements) {
+                    if(element.text().indexOf("笔顺编码")>-1){
+                        order = element.select(".hanzi5-article-hanzi-info-td2").text();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Utils.writeToTxt("E:\\order.txt", line, order);
+        }
+    }
+
+    /**
+     * 获取 笔画顺序名称
+     * @throws UnsupportedEncodingException
+     */
+    private static void bihua2() throws UnsupportedEncodingException {
+        String url = "http://bishun.shufaji.com/0x%s.html";
+        List<String> lines = Utils.readFileToList("E:\\1.txt");
+        for (String line : lines) {
+            String word = UnicodeUtil.toUnicode(line).replace("\\u","");
+            String urlTmp = String.format(url, word);
+            String name = "";
+            try {
+                Document doc = Jsoup.connect(urlTmp)
+                        .timeout(2000)
+                        .get();
+                Elements elements = doc.select("#hzcanvas");
+                name = elements.text();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Utils.writeToTxt("E:\\3.txt", line, name);
+        }
+    }
+    /**
+     * https://bihua.51240.com/e5a5b3__bihuachaxun/
+     * 获取 笔画顺序名称
+     */
+    private static void bihua1() throws UnsupportedEncodingException {
+//        System.setProperty("http.maxRedirects", "50");
+//        System.getProperties().setProperty("proxySet", "true");
+        // 如果不设置，只要代理IP和代理端口正确,此项不设置也可以
+//        System.getProperties().setProperty("http.proxyHost", "118.99.108.3");
+//        System.getProperties().setProperty("http.proxyPort", "8080");
+
+        String url = "https://bihua.51240.com/%s__bihuachaxun/";
+        List<String> lines = Utils.readFileToList("E:\\1.txt");
+        for (String line : lines) {
+            String word = URLEncoder.encode(line, "utf-8");
+            word = word.replace("%", "").toLowerCase();
+            String urlTmp = String.format(url, word);
+            String name = "";
+            try {
+                Document doc = Jsoup.connect(urlTmp)
+                        .timeout(500)
+                        .get();
+                Elements elements = doc.select("tr tr");
+                for (Element element : elements) {
+                    if (element.text().indexOf("名称") > -1) {
+                        name = element.text().replace("名称", "").replace("更多：https://www.51240.com/", "").replace(" ", "").trim();
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Utils.writeToTxt("E:\\3.txt", line, name);
+        }
     }
 
     private static void baiduIdiom() {
@@ -119,7 +214,7 @@ public class WatchSpider {
         String url = "https://chengyu.911cha.com/?q=%s";
         List<String> idioms = Utils.readFileToList("E:\\left.txt");
         for (String idiom : idioms) {
-            if(idiom.length() == 5){
+            if (idiom.length() == 5) {
                 idiom = idiom.substring(1);
             }
             String urlNew = String.format(url, URLEncoder.encode(idiom));
@@ -131,15 +226,15 @@ public class WatchSpider {
             }
             try {
                 document = Jsoup.connect(urlNew)
-                        .header("Host","chengyu.911cha.com")
-                        .header("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0")
-                        .header("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
-                        .header("Accept-Encoding","gzip, deflate, br")
-                        .header("Accept-Language","zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2")
-                        .header("Connection","keep-alive")
-                        .header("Content-Length","0")
-                        .cookie("Hm_lpvt_2e69b379c7dbfdda15f852ee2e7139dc\t","1603852714")
-                        .cookie("Hm_lvt_2e69b379c7dbfdda15f852ee2e7139dc\t","1603781248")
+                        .header("Host", "chengyu.911cha.com")
+                        .header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0")
+                        .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+                        .header("Accept-Encoding", "gzip, deflate, br")
+                        .header("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2")
+                        .header("Connection", "keep-alive")
+                        .header("Content-Length", "0")
+                        .cookie("Hm_lpvt_2e69b379c7dbfdda15f852ee2e7139dc\t", "1603852714")
+                        .cookie("Hm_lvt_2e69b379c7dbfdda15f852ee2e7139dc\t", "1603781248")
                         .post();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -150,19 +245,20 @@ public class WatchSpider {
             boolean isMatch = false;
             for (Element element : elements) {
                 String chengyu = element.select("a").select(".green").text().trim();
-                System.out.println(chengyu+"\t"+idiom);
+                System.out.println(chengyu + "\t" + idiom);
                 if (chengyu.equals(idiom)) {
-                    String detailUrl = "https://chengyu.911cha.com/"+element.select("a").attr("href").trim().replace("./","");
+                    String detailUrl = "https://chengyu.911cha.com/" + element.select("a").attr("href").trim().replace("./", "");
                     getDetail(detailUrl, idiom);
                     isMatch = true;
                     break;
                 }
             }
-            if(!isMatch){
+            if (!isMatch) {
                 Utils.writeToTxt("E:\\error_911_idiom.txt", idiom);
             }
         }
     }
+
     /**
      * 911成语大全
      */
@@ -170,13 +266,13 @@ public class WatchSpider {
         Document document = null;
         try {
             document = Jsoup.connect(url)
-                    .header("Host","chengyu.911cha.com")
-                    .header("User-Agent","Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0")
-                    .header("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
-                    .header("Accept-Encoding","gzip, deflate, br")
-                    .header("Accept-Language","zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2")
-                    .header("Connection","keep-alive")
-                    .header("Content-Length","0")
+                    .header("Host", "chengyu.911cha.com")
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:81.0) Gecko/20100101 Firefox/81.0")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+                    .header("Accept-Encoding", "gzip, deflate, br")
+                    .header("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2")
+                    .header("Connection", "keep-alive")
+                    .header("Content-Length", "0")
                     .get();
         } catch (IOException e) {
             e.printStackTrace();
@@ -196,7 +292,7 @@ public class WatchSpider {
         JSONObject jsonObject = new JSONObject();
         for (Element element : elements) {
             String key = element.select(".tt").text().trim();
-            String value = element.text().replace(key,"").trim();
+            String value = element.text().replace(key, "").trim();
             if (StringUtils.isAnyBlank(key, value)) {
                 continue;
             }
@@ -205,7 +301,7 @@ public class WatchSpider {
         Utils.writeToTxt("E:\\911_idiom.txt", idiom, pinyin, jsonObject.toJSONString());
     }
 
-    private static void filter911(){
+    private static void filter911() {
 //        List<String> idioms = Utils.readFileToList("E:\\成语.txt");
         List<String> idioms111 = Utils.readFileToList("E:\\911_idiom_1.txt");
         Set<String> keys = new HashSet<>();
@@ -213,18 +309,18 @@ public class WatchSpider {
             JSONObject item = JSONObject.parseObject(s.split("\t")[2]);
             keys.addAll(item.keySet());
         }
-        keys.forEach(e-> System.out.println(e));
-        Utils.writeToTxt("E:\\911_idiom.txt", "成语", "拼音", StringUtils.join(keys.toArray(),"\t"));
+        keys.forEach(e -> System.out.println(e));
+        Utils.writeToTxt("E:\\911_idiom.txt", "成语", "拼音", StringUtils.join(keys.toArray(), "\t"));
         for (String s : idioms111) {
             String chengyu = s.split("\t")[0];
             String pinyin = s.split("\t")[1];
             JSONObject item = JSONObject.parseObject(s.split("\t")[2]);
 
             List<String> list = new ArrayList<>(keys.size());
-            keys.forEach(e->{
-                list.add(StringUtils.isBlank(item.getString(e))?"":item.getString(e));
+            keys.forEach(e -> {
+                list.add(StringUtils.isBlank(item.getString(e)) ? "" : item.getString(e));
             });
-            Utils.writeToTxt("E:\\911_idiom.txt", chengyu, pinyin, StringUtils.join(list.toArray(),"\t"));
+            Utils.writeToTxt("E:\\911_idiom.txt", chengyu, pinyin, StringUtils.join(list.toArray(), "\t"));
         }
     }
 }

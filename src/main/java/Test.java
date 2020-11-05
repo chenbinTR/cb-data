@@ -1,13 +1,17 @@
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.time.DateUtils;
 import utils.SymmetricEncoder;
+import utils.Utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author ChenOT
@@ -24,19 +28,13 @@ public class Test {
     private static SimpleDateFormat simFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final String test = "111";
     public static void main(String[] args) throws IOException {
-        Date date = new Date();
-        System.out.println(DateUtil.formatDateTime(date));
-        date = DateUtils.setHours(date, 0);
-        System.out.println(DateUtil.formatDateTime(date));
-        date = DateUtils.setMilliseconds(date, 0);
-        System.out.println(DateUtil.formatDateTime(date));
-        date = DateUtils.setMinutes(date, 0);
-        System.out.println(DateUtil.formatDateTime(date));
-        date = DateUtils.setSeconds(date, 0);
-        System.out.println(DateUtil.formatDateTime(date));
-        date = DateUtils.addDays(date, -1);
-        System.out.println(DateUtil.formatDateTime(date));
-
+        List<String> lines = Utils.readFileToList("E:\\成语.txt");
+        for (String line : lines) {
+            String id = line.split("\t")[0];
+            String fileName = line.split("\t")[3].replace("https://universe-file.tuling123.com/book_image/","");
+            File file = new File("E:\\迅雷下载1\\"+fileName);
+            FileUtil.rename(file, id, true,true);
+        }
 
 
         System.out.println(SymmetricEncoder.AESEncode("YIEK3ijSwfxYrINxvmPBLHXIEHlf7m"));
