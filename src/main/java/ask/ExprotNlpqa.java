@@ -1,6 +1,5 @@
-package ask.nlpqa;
+package ask;
 
-import ask.nlpqa.Ask;
 import com.alibaba.fastjson.JSONObject;
 import com.mysql.jdbc.Connection;
 import org.apache.commons.lang3.StringUtils;

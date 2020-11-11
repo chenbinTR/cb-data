@@ -1,4 +1,4 @@
-package ask.nlpqa;
+package ask;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

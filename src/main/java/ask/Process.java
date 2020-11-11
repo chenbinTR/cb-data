@@ -1,7 +1,6 @@
-package ask.nlpqa;
+package ask;
 
 import com.alibaba.fastjson.JSON;
-import utils.Utils;
 import utils.UtilsMini;
 
 import java.util.HashSet;
