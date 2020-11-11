@@ -27,18 +27,18 @@ public class TtsTest {
      * -ac 设定声音的Channel数
      * -acodec 设定声音编解码器，未设定时则使用与输入流相同的编解码器
      */
-    private final String TTS_URL = "";
+    private final String TTS_URL = "http://tts-v1.alpha.tuling123.com/tts/getText";
     private TtsRequest ttsRequest;
     @Before
     public void initData(){
         ttsRequest = new TtsRequest();
-        ttsRequest.setText_str("哼唱的声音");
-        ttsRequest.setBiz_code("e2e_xixi_16k");
+        ttsRequest.setText_str("小朋友,听智娃给你讲一讲成语夸父逐日的故事吧");
+        ttsRequest.setBiz_code("emo_16k_j3");
         ttsRequest.setEncode_fmt("base64");
         ttsRequest.setStream(0);
-        ttsRequest.setSpeed(9);
-        ttsRequest.setLoudness(5);
-        ttsRequest.setArousal(6);
+//        ttsRequest.setSpeed(5);
+//        ttsRequest.setLoudness(5);
+//        ttsRequest.setArousal(6);
 //        System.out.println(JSONObject.toJSONString(ttsRequest));
     }
     @Test
@@ -56,6 +56,7 @@ public class TtsTest {
     }
     @Test
     public void testTuringTTS(){
+        String fileName = "1";
 //        String param = "{\"text_str\":\"我是张清一\", \"encode_fmt\":\"base64\", \"biz_code\":\"e2e_xixi_16k\", \"stream\":0}";
 //        String param = "{\"syl_flag\": 0,\"stream\": 0,\"speed\": 5,\"fast_mode\":0,\"track_key\": \"\", \"text_str\": \"的了还叶比人，家国展王想长坏蜀。\", \"loudness\": 1, \"biz_code\": \"e2e_xixi_16k\", \"encode_fmt\": \"base64\"}";
 //        String param = "{\"arousal\":1.2,\"biz_code\":\"e2e_xixi_16k\",\"encode_fmt\":\"base64\",\"f0_bias\":1.0,\"fast_mode\":1,\"globalId\":\"111749186808810041\",\"loudness\":1.0,\"speed\":0.9,\"stream\":0,\"text_str\":\"哼唱的声音\"}";
@@ -63,7 +64,7 @@ public class TtsTest {
         String[] results = result.split("}\\{");
         final String pcmData = JSON.parseObject(results[0]+"}").getString("data");
         // 写入pcm文件
-        base64ToFile("Q:\\",pcmData, "xixi.pcm");
+        base64ToFile("E:\\",pcmData, fileName+".pcm");
         // 转wav
 //        byte[] bytes = Base64.getDecoder().decode(pcmData);
 //        System.out.println(bytes.length);
@@ -72,7 +73,8 @@ public class TtsTest {
 //        bytesToFile("Q:\\", wavBytes, "xixi.wav");
         // 转mp3
         try {
-            Runtime.getRuntime().exec("ffmpeg -y -f s16le -ar 8000 -ac 2 -i Q:\\xixi.pcm -acodec libmp3lame Q:\\xixi.mp3");
+//            Runtime.getRuntime().exec("ffmpeg -y -f s16le -ar 16000 -ac 1 -i E:\\xixi.pcm -acodec libmp3lame E:\\xixi.mp3");
+            Runtime.getRuntime().exec("ffmpeg -y -ac 1 -ar 16000 -f s16le -i E:\\"+fileName+".pcm -c:a libmp3lame -b:a 16k E:\\"+fileName+".mp3");
         } catch (IOException e) {
             e.printStackTrace();
         }

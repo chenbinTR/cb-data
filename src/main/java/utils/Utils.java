@@ -20,12 +20,30 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
  * Created by cb on 2017-03-09.
  */
 public class Utils {
+    /**
+     * 判断字符串中是否包含中文
+     *
+     * @param str 待校验字符串
+     * @return 是否为中文
+     * @warn 不能校验是否为中文标点符号
+     */
+    private static boolean isContainChinese(String str) {
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return true;
+        }
+        return false;
+    }
+
     //将文件转化为单声道
     public static File executeSingleChannel(File source, String desFileName) throws EncoderException {
         File target = new File(desFileName);
@@ -472,28 +490,6 @@ public class Utils {
                 content = content + item;
             }
         }
-        File file = new File(path);
-        FileWriter fw = null;
-        BufferedWriter writer = null;
-        try {
-            fw = new FileWriter(file, true);
-            writer = new BufferedWriter(fw);
-            writer.write(content);
-            writer.newLine();
-            writer.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                writer.close();
-                fw.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void writeToTxt(String path, String content) {
         File file = new File(path);
         FileWriter fw = null;
         BufferedWriter writer = null;

@@ -1,5 +1,7 @@
 package utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -9,11 +11,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class FileHelper {
-    public static void main(String[] args) throws IOException {
-        File file = new File("Q:\\1.png");
-        String downloadUrl = "https://turing-platform-openapi.oss-cn-beijing.aliyuncs.com/openapi/image/34e86b172bb145cbbbfd72395e58722f_34e86b172bb145cbbbfd72395e58722f_5c3f7b14405a49d8823d943bc5ce4ed6.png";
-        downloadFile(downloadUrl, file);
-    }
+    /**
+     * 下载文件
+     * @param downloadUrl
+     * @param file
+     * @return
+     */
     public static boolean downloadFile(String downloadUrl, File file) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -32,28 +35,6 @@ public class FileHelper {
             return false;
         }
         return true;
-    }
-
-    /**
-     * 判断要下载的文件是否存在
-     * @param downloadUrl
-     * @return
-     */
-    public static boolean isFileExist(String downloadUrl) {
-        try {
-            URL url = new URL(downloadUrl);
-            URLConnection connection = url.openConnection();
-            InputStream inputStream = connection.getInputStream();
-            byte[] bytes = new byte[1024];
-            if (inputStream.read(bytes) == -1) {
-                return false;
-            }
-            inputStream.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
     /**
      * 读文件(按行读取，保存到list中，读取文件全部内容)
@@ -134,8 +115,8 @@ public class FileHelper {
             conn.setDoInput(true);
             conn.setUseCaches(false);
             conn.setRequestMethod("POST");
-            conn.setConnectTimeout(10000);
-            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(20000);
+            conn.setReadTimeout(20000);
             conn.setRequestProperty("Content-Type", "application/json");
             conn.connect();
             out = new OutputStreamWriter(conn.getOutputStream(), encode);
@@ -165,5 +146,69 @@ public class FileHelper {
             }
         }
         return result;
+    }
+
+    /**
+     * 文件合并
+     *
+     * @param sourceFileNames
+     * @param destFileName
+     * @throws Exception
+     */
+    public static void combinFile(List<String> sourceFileNames, String destFileName) {
+        // 判断源文件是否有效
+        boolean isExistSource = false;
+        for (String sourceFileName : sourceFileNames) {
+            if (StringUtils.isBlank(sourceFileName)) {
+                continue;
+            }
+            isExistSource = true;
+        }
+        if (!isExistSource) {
+            return;
+        }
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(new File(destFileName));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        for (String sourceFileName : sourceFileNames) {
+            if (StringUtils.isBlank(sourceFileName)) {
+                continue;
+            }
+            File f = new File(sourceFileName);
+            if (!f.exists()) {
+                System.err.println("文件不存在：" + sourceFileName + destFileName);
+                continue;
+            }
+            FileInputStream sourceFileInputStream = null;
+            try {
+                sourceFileInputStream = new FileInputStream(new File(sourceFileName));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            byte[] b = new byte[1024];
+            int len;
+            try {
+                while ((len = sourceFileInputStream.read(b)) != -1) {
+                    for (int i = 0; i < len; i++) {
+                        out.write(b[i]);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                sourceFileInputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

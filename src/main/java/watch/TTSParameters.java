@@ -6,11 +6,10 @@ public class TTSParameters {
     public String text;
     public final int tone = 21;
     public final int tts = 3;
-    public final int speed = 5;
-    public String token;
+    public final int speed = 4;
+    public String token = "";
 
-    public TTSParameters(String text, String token){
+    public TTSParameters(String text){
         this.text = text;
-        this.token = token;
     }
 }
