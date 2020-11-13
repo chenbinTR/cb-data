@@ -3,16 +3,17 @@ package watch;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hankcs.hanlp.dictionary.py.String2PinyinConverter;
 import org.apache.commons.lang3.StringUtils;
 import utils.FileHelper;
+import utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 智娃tts音频生成
@@ -51,7 +52,9 @@ public class BatchSynth {
                     if (!commaItem.endsWith(END_SYMBOL)) {
                         commaItem = commaItem.trim() + COMMA_SYMBOL;
                     }
-                    explainList.add(commaItem);
+                    if(Utils.isContainChinese(commaItem)){
+                        explainList.add(commaItem);
+                    }
                 }
             }
             // 把拆分好的断句分别tts生成音频，再合成一个音频
@@ -85,8 +88,11 @@ public class BatchSynth {
             mp3Files.add(mp3File);
         }
         //tts转换成功，合并成一个音频文件
+
         if (isCorrect) {
-            FileHelper.combinFile(mp3Files, path + fileName + ".mp3");
+            String pinyin = org.apache.commons.lang.StringUtils.join(String2PinyinConverter.convert(fileName).toArray());
+            FileHelper.combinFile(mp3Files, path + pinyin + ".mp3");
+            Utils.writeToTxt("E:\\tt.txt", fileName, pinyin);
         }
         for (String mp3File : mp3Files) {
             FileUtil.del(mp3File);

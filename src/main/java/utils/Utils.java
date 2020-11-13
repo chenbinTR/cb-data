@@ -35,7 +35,7 @@ public class Utils {
      * @return 是否为中文
      * @warn 不能校验是否为中文标点符号
      */
-    private static boolean isContainChinese(String str) {
+    public static boolean isContainChinese(String str) {
         Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
         Matcher m = p.matcher(str);
         if (m.find()) {
