@@ -125,7 +125,7 @@ public class MailUtils {
     }
 
     private static final String content = "123";
-    private static final String addrs = "561303545@qq.com|972616722@qq.com";
+    private static final String addrs = "fengxinxin@uzoo.cn";
 }
 
 class MyAuthenticator extends Authenticator {

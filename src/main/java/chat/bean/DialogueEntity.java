@@ -23,8 +23,8 @@ public class DialogueEntity {
     private String newcmd;
     private String normalization;
     private JSONObject create_at;
-    private String create_by = "贾志强";
-    private String review_by = "贾志强";
+    private String create_by = "biz";
+    private String review_by = "biz";
     private String batch_num = "202005200101";
     private int state = 1;
     private String sensitive_word;

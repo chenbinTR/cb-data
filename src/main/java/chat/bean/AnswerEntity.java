@@ -15,7 +15,6 @@ import java.util.List;
  * @author ChenOT
  * @date 2019-09-18
  * @see
- * @since
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,8 +26,8 @@ public class AnswerEntity {
     private double score = 100.0;
     private int qid;
     private JSONObject create_at;
-    private String create_by = "贾志强";
-    private String review_by = "贾志强";
+    private String create_by = "biz";
+    private String review_by = "biz";
     private String batch_num = "202005200101";
     private int state = 1;
     private int aid;
@@ -38,10 +37,10 @@ public class AnswerEntity {
     private String sensitive_word;
     private JSONObject _id;
 
-    public AnswerEntity(int qid, String answer){
+    public AnswerEntity(int qid, String answer, int channel) {
         this.qid = qid;
-        this.aid = answer.hashCode()+ RandomUtils.nextInt(1,10000);
-        this.tags = new Tag();
+        this.aid = answer.hashCode() + RandomUtils.nextInt(1, 10000);
+        this.tags = new Tag(channel);
         Info info = new Info(answer);
         infos = new ArrayList<>(1);
         infos.add(info);
@@ -145,11 +144,11 @@ public class AnswerEntity {
         this.infos = infos;
     }
 
-    public class Info{
+    public class Info {
         private int type = 0;
         private String content;
 
-        public Info(String content){
+        public Info(String content) {
             this.content = content;
         }
 
@@ -170,10 +169,19 @@ public class AnswerEntity {
         }
     }
 
-    public class Tag{
+    public class Tag {
+        /**
+         *  channel:0  通用语料
+         *  channel:1  语料只适用于儿童，优先选取
+         *  channel:-1 语料不适用于儿童
+         */
         private int channel;
         private String sentence_form_score = "0.9997557401657104";
         private String sentence_form = "陈述句";
+
+        public Tag(int channel) {
+            this.channel = channel;
+        }
 
         public String getSentence_form_score() {
             return sentence_form_score;
@@ -199,7 +207,6 @@ public class AnswerEntity {
             this.channel = channel;
         }
     }
-
 
 
 }
