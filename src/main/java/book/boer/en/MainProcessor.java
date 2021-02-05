@@ -26,7 +26,7 @@ public class MainProcessor {
     /**
      * 待处理的套书文件夹名称集合`
      */
-    private static List<String> seriesNameList = Arrays.asList("上海初中英语-副本");
+    private static List<String> seriesNameList = Arrays.asList("译林初中英语8上8下9上");
 //    private static List<String> seriesNameList;
 //    static{
 //        File file = new File("E:\\BOOK_DATA\\已处理\\已修正-加静音段\\英语");

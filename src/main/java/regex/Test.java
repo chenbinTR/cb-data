@@ -10,20 +10,17 @@ import java.util.regex.Pattern;
  * @since
  */
 public class Test {
+    private static final Pattern TODAY = Pattern.compile("(?:大?前天|昨天|今天|明天|明|大?后天)");
+
     public static void main(String[] args) {
-//        Pattern pattern = Pattern.compile("^翻译([0-9a-zA-Z\\u4e00-\\u9fa5]+)");
-        Pattern pattern = Pattern.compile("^你会说(\\S{1,4})吗$");
-        Matcher matcher = pattern.matcher("你会说爱我吗");
+        Matcher matcher = TODAY.matcher("我知道今天会，明早下雨");
         while(matcher.find()){
-//            System.out.println(matcher.groupCount());
+            System.out.println(matcher.groupCount());
 //            System.out.println(matcher.start(1));
 //            System.out.println(matcher.end(1));
-            System.out.println(matcher.group(1));
-//            System.out.println(matcher.group(0));
+            System.out.println(matcher.group());
+//            System.out.println(matcher.group(1));
 //            System.out.println(matcher.group());
-
-            System.out.println(matcher.start(1));
-            System.out.println(matcher.end(1));
         }
 
 //        String text = "翻译我喜欢你";

@@ -26,7 +26,17 @@ public class ImportDialogueAnswer {
      * 数据路径
      */
 //    private static final String rootPath = "/home/developer/bat/";
-    private static final String rootPath = "E:\\";
+    private static final String rootPath;
+
+    static {
+        String osName = System.getProperties().getProperty("os.name");
+        if (osName.toLowerCase().indexOf("window") > -1) {
+            rootPath = "E:\\";
+        } else {
+            rootPath = "/home/developer/bat/";
+        }
+    }
+
     private static final String path = rootPath + "data.txt";
     private static final String path_qid = rootPath + "data_qid.txt";
     /**
@@ -38,7 +48,7 @@ public class ImportDialogueAnswer {
     /**
      * 起始qid
      */
-    private static final int start_qid = 5001187;
+    private static final int start_qid = 5001192;
 
     /**
      * 补全qid字段（添加es数据要用）
@@ -114,9 +124,8 @@ public class ImportDialogueAnswer {
 
     public static void main(String[] args) throws IOException {
         // 先补全qid列
-        createQid();
-//        createDialogueAnswer();
-//        insertOneAnswer();
+//        createQid();
+        createDialogueAnswer();
 //        ChatEs.saveEs(EsAddress.PROD_ES_1, "nlp_chat_19-03-12", path + "data_new.txt");
 //        saveEs(EsAddress.PROD_ES_2, "nlp_chat_19-03-12");
 //        deleteEs(EsAddress.PROD_ES_2);
