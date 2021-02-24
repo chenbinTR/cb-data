@@ -1,10 +1,15 @@
 package img;
 
+import sun.misc.BASE64Encoder;
+
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * @author ChenOT
@@ -12,6 +17,49 @@ import java.io.IOException;
  * @date 2020/10/13
  */
 public class ImgUtils {
+    private static String convertFileToBase64(String imgPath) {
+        byte[] data = null;
+        // 读取图片字节数组
+        try {
+            InputStream in = new FileInputStream(imgPath);
+            System.out.println("文件大小（字节）=" + in.available());
+            data = new byte[in.available()];
+            in.read(data);
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // 对字节数组进行Base64编码，得到Base64编码的字符串
+        BASE64Encoder encoder = new BASE64Encoder();
+        String base64Str = encoder.encode(data);
+        return base64Str;
+    }
+
+    public static void main(String[] args) {
+        readImgInfo("D:\\2022a246087e428c87482e7b9645fa67.jpg");
+    }
+    public static void readImgInfo(String path) {
+        System.out.println(convertFileToBase64(path));
+        ImageIcon imageIcon = new ImageIcon(path);
+        int iconWidth = imageIcon.getIconWidth();
+        int iconHeight = imageIcon.getIconHeight();
+        System.out.println(iconWidth + "," + iconHeight);
+
+
+        Image image = imageIcon.getImage();
+        int imageWidth = image.getWidth(imageIcon.getImageObserver());
+        int imageHeight = image.getHeight(imageIcon.getImageObserver());
+        System.out.println(imageWidth + "," + imageHeight);
+
+        try {
+            BufferedImage bufferedImage = ImageIO.read(new File(path));
+            int width = bufferedImage.getWidth();
+            int height = bufferedImage.getHeight();
+            System.out.println(width + "," + height);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 合并任数量的图片成一张图片
@@ -78,17 +126,5 @@ public class ImgUtils {
             System.out.println(e.getMessage());
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-        BufferedImage d = loadImageLocal("E:/1.jpg");
-        BufferedImage b = loadImageLocal("E:/2.jpg");
-        try {
-            BufferedImage newImg = mergeImage(true, "", d, b);
-            File file = new File("E:/new10.jpg");
-            ImageIO.write(newImg, "jpg", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

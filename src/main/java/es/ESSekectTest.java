@@ -160,11 +160,10 @@ public class ESSekectTest {
      */
     @Test
     public void boolQuery() {
-        SearchResponse searchResponse = EsClient.getClient(EsAddress.ALPHA_ES).prepareSearch("nlp_chat")
-                .setTypes("doc")
+        SearchResponse searchResponse = EsClient.getClient(EsAddress.LOCAL).prepareSearch("test")
+                .setTypes("book")
                 .setQuery(QueryBuilders.boolQuery()
-                        .should(QueryBuilders.matchQuery("question", "小学英语"))
-                        .should(QueryBuilders.matchQuery("question", "和珅和大人"))
+                        .should(QueryBuilders.termQuery("interests","小飞侠"))
                 )
                 .get();
         SearchHits hits = searchResponse.getHits();
@@ -173,7 +172,7 @@ public class ESSekectTest {
         Iterator<SearchHit> iterator = hits.iterator();
         while (iterator.hasNext()) {
             SearchHit next = iterator.next();
-            System.out.println(next.getSourceAsMap().get("question"));
+            System.out.println(next.getSourceAsMap().get("name"));
         }
     }
 }
