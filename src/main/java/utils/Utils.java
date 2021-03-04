@@ -519,16 +519,16 @@ public class Utils {
     public static Set<String> readFileToSet(String filePath) {
         Set<String> set = new HashSet<String>();
         File file = new File(filePath);
-        readFile(file, set);
+        readFile(file, set, "UTF-8");
         return set;
     }
 
-    private static void readFile(File file, Collection collection) {
+    private static void readFile(File file, Collection collection, String encoding) {
         BufferedReader reader = null;
         if (file.exists()) {
             try {
                 reader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(file), "UTF-8"));
+                        new FileInputStream(file), encoding));
                 String temp = null;
                 while (null != (temp = reader.readLine())) {
                     if (StringUtils.isNotBlank(temp.trim())) {
@@ -558,7 +558,19 @@ public class Utils {
     public static List<String> readFileToList(String filePath) {
         List<String> list = new ArrayList<String>();
         File file = new File(filePath);
-        readFile(file, list);
+        readFile(file, list, "UTF-8");
+        return list;
+    }
+
+    /**
+     * 读文件(按行读取，保存到list中，读取文件全部内容)
+     *
+     * @param filePath 文件路径
+     */
+    public static List<String> readFileToList(String filePath, String encoding) {
+        List<String> list = new ArrayList<String>();
+        File file = new File(filePath);
+        readFile(file, list, encoding);
         return list;
     }
 

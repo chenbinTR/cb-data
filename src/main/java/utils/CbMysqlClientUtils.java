@@ -24,7 +24,8 @@ public class CbMysqlClientUtils {
         Connection conn = null;
         try {
             Class.forName(DRIVER);
-            conn = (Connection) DriverManager.getConnection(String.format("jdbc:mysql://%s:%s/%s", SymmetricEncoder.AESDncode(connectType.getHost()), connectType.getPort(), connectType.getDb()), connectType.getUser(), connectType.getPasswd());
+//            conn = (Connection) DriverManager.getConnection(String.format("jdbc:mysql://%s:%s/%s", SymmetricEncoder.AESDncode(connectType.getHost()), connectType.getPort(), connectType.getDb()), connectType.getUser(), connectType.getPasswd());
+            conn = (Connection) DriverManager.getConnection(String.format("jdbc:mysql://%s:%s/%s", connectType.getHost(), connectType.getPort(), connectType.getDb()), connectType.getUser(), connectType.getPasswd());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -40,7 +41,8 @@ public class CbMysqlClientUtils {
         DEV_QA_PLATFORM("65DeqWwvk/vYM6r4+1XhKWPPOixTVGblSdUt5DffrsY=", "appuser", "appuser123", "3306", "nlp_chat"),
         PROD_PLATFORM("rqfonOhDYGknjUOV5Xd/qcGGpu/xhfSIf/v617NHslKVCh5h2+JVOtAMMT//PcOK", "turing_platform", "laQ8MWHFnbIx8zxY", "3308", "turing_platform"),
         // 儿童
-        PROD_NLP_CHAT("JsFVrR1NL9UHX/XbbAs3ig==","nlp_chat", "mzyVDO98iySuXiOh", "3306", "nlp_chat");
+        PROD_NLP_CHAT("JsFVrR1NL9UHX/XbbAs3ig==", "nlp_chat", "mzyVDO98iySuXiOh", "3306", "nlp_chat"),
+        PROD_FAQ("common.backend.mysql.tulingapi.com", "nlp_faq", "8yxNVhNa7faDPbNR", "3308", "nlp_faq");
 
         private String host;
         private String user;

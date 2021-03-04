@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import es.EsAddress;
 import org.bson.Document;
 import utils.CbMongoClient;
 import utils.Utils;
@@ -125,8 +126,8 @@ public class ImportDialogueAnswer {
     public static void main(String[] args) throws IOException {
         // 先补全qid列
 //        createQid();
-        createDialogueAnswer();
-//        ChatEs.saveEs(EsAddress.PROD_ES_1, "nlp_chat_19-03-12", path + "data_new.txt");
+//        createDialogueAnswer();
+        ChatEs.saveEs(EsAddress.PROD_ES_2, "nlp_chat", rootPath + "q.txt");
 //        saveEs(EsAddress.PROD_ES_2, "nlp_chat_19-03-12");
 //        deleteEs(EsAddress.PROD_ES_2);
     }

@@ -9,8 +9,8 @@ public enum EsAddress {
     ALPHA_ES("bIQlPORw3/vNq0GINmL5kA==", 9301),
     BETA_ES("hPN4hxW+E+aTG7VrIZCqHg==", 9301),
     PROD_ES_1("TWzsEt9wEe2UaBFVIV6gQg==", 9301),
-    LOCAL("localhost", 9300);
-//    PROD_ES_2("8UKRcddeyz78QQ1G5etx1A==", 9301);
+    LOCAL("localhost", 9300),
+    PROD_ES_2("DAflfIBOB8Qh7UrIOsN0+w==", 9301);
     /**
      * host地址.
      */
@@ -30,10 +30,12 @@ public enum EsAddress {
         this.host = host;
         this.port = port;
     }
-    public String getHost(){
+
+    public String getHost() {
         return host;
     }
-    public int getPort(){
+
+    public int getPort() {
         return port;
     }
 }

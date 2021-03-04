@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.DateFormat;
@@ -16,6 +17,62 @@ import java.util.regex.Pattern;
  * Created by cb on 2017-09-29.
  */
 public class UtilsMini {
+    public static String httpPost(String param, String url) {
+        return httpPost(param, url, "UTF-8");
+    }
+
+    /**
+     * http post
+     *
+     * @param param
+     * @param url
+     * @return
+     */
+    public static String httpPost(String param, String url, String encode) {
+        OutputStreamWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) realUrl
+                    .openConnection();
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(1000);
+            conn.setReadTimeout(1000);
+            conn.setRequestProperty("Content-Type", "application/json");
+//            conn.setRequestProperty("Auth-Token", "f8dfe5d353234c71ac9bafb410ae62de");
+            conn.connect();
+            out = new OutputStreamWriter(conn.getOutputStream(), encode);
+            out.write(param);
+
+            out.flush();
+            out.close();
+            //
+            in = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(), encode));
+            String line = "";
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return result;
+    }
     /**
      * 替代replaceAll方法
      * @param pattern
