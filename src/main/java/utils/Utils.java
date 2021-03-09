@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
  * Created by cb on 2017-03-09.
  */
 public class Utils {
+    private static final Pattern CH_PATTERN = Pattern.compile("[\u4e00-\u9fa5]");
+
     /**
      * 判断字符串中是否包含中文
      *
@@ -36,8 +38,7 @@ public class Utils {
      * @warn 不能校验是否为中文标点符号
      */
     public static boolean isContainChinese(String str) {
-        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
-        Matcher m = p.matcher(str);
+        Matcher m = CH_PATTERN.matcher(str);
         if (m.find()) {
             return true;
         }
