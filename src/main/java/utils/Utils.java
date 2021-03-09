@@ -453,7 +453,6 @@ public class Utils {
                     .openConnection();
 
             connection.setRequestProperty("Content-type", "application/json; charset=utf-8");
-            connection.addRequestProperty("Content-type", "application/json; charset=utf-8");
             connection.setConnectTimeout(1000);
             connection.setReadTimeout(3000);
             connection.connect();
@@ -478,6 +477,12 @@ public class Utils {
 
     }
 
+    /**
+     * 写文件
+     *
+     * @param path
+     * @param contents 多个字段， 以 \t 隔开
+     */
     public static void writeToTxt(String path, String... contents) {
         int length = contents.length;
         String content = "";
@@ -490,24 +495,17 @@ public class Utils {
                 content = content + item;
             }
         }
+
         File file = new File(path);
-        FileWriter fw = null;
-        BufferedWriter writer = null;
-        try {
-            fw = new FileWriter(file, true);
-            writer = new BufferedWriter(fw);
+        try (
+                FileWriter fw = new FileWriter(file, true);
+                BufferedWriter writer = new BufferedWriter(fw)
+        ) {
             writer.write(content);
             writer.newLine();
             writer.flush();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            try {
-                writer.close();
-                fw.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -524,28 +522,17 @@ public class Utils {
     }
 
     private static void readFile(File file, Collection collection, String encoding) {
-        BufferedReader reader = null;
         if (file.exists()) {
-            try {
-                reader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(file), encoding));
-                String temp = null;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file), encoding))) {
+                String temp;
                 while (null != (temp = reader.readLine())) {
                     if (StringUtils.isNotBlank(temp.trim())) {
                         collection.add(temp.trim());
                     }
                 }
-                reader.close();
             } catch (IOException e) {
                 e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
     }
