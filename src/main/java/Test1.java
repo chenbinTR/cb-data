@@ -1,7 +1,9 @@
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import utils.Utils;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -19,7 +21,19 @@ public class Test1 {
     }
 
     public static void main(String[] args) {
-        tttt();
+        File folder = new File("E:\\扫读笔测试集");
+        String[] files = folder.list();
+        System.out.println(files.length);
+
+        List<String> lines = Utils.readFileToList("E:\\1.txt");
+        System.out.println(lines.size());
+        String allLine = StringUtils.join(files, "|");
+        for (String file : lines) {
+            if(allLine.indexOf(file)<0){
+                System.out.println(file);
+            }
+        }
+//        tttt();
 //        File file = new File("E:\\en.z");
 //        List<String> lines = Utils.readFileToList("E:\\en.z", "gbk");
 //        lines.forEach(line-> System.out.println(line));
