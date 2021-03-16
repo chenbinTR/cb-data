@@ -112,11 +112,11 @@ public class ChatEs {
 //    }
 
     public static void main(String[] args) {
-        try {
-            saveEs(EsAddress.PROD_ES_1, "nlp_chat_19-03-12", "E:\\data_qid.txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-//        exportEs(EsAddress.PROD_ES_1, "nlp_chat_19-03-12");
+//        try {
+//            saveEs(EsAddress.PROD_ES_1, "nlp_chat_19-03-12", "E:\\data_qid.txt");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        exportEs(EsAddress.ALPHA_ES, "nlp_attr");
     }
 }
