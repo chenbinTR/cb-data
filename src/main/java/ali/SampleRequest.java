@@ -7,8 +7,8 @@ import java.util.List;
 
 public class SampleRequest {
     private static String serviceURL = "http://mt.cn-hangzhou.aliyuncs.com/api/translate/web/general";
-    private static String accessKeyId = "LTAI4GHYFQkqxZCnc2AMAbA2";// 使用您的阿里云访问密钥 AccessKeyId
-    private static String accessKeySecret = "PYsn4nRp6zkujhEWxfGHBU0Og7jukN"; // 使用您的阿里云访问密钥
+    private static String accessKeyId = "";// 使用您的阿里云访问密钥 AccessKeyId
+    private static String accessKeySecret = ""; // 使用您的阿里云访问密钥
 
     public static void main(String[] args) {
         batchProcess();
