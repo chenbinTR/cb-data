@@ -13,7 +13,8 @@ import java.util.List;
 
 public class FaqQuestion {
     public static void main(String[] args) {
-//        getFaq();
+//        getMapper();
+        getFaq();
         getFaqSimi();
     }
 
@@ -98,6 +99,39 @@ public class FaqQuestion {
                 e.printStackTrace();
                 System.out.println(e.getMessage());
                 UtilsMini.writeToTxt(path + "mapper_error.txt", line);
+            } finally {
+                if (connection != null) {
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        System.out.println("完成！");
+    }
+
+    private static void getMapper() {
+        List<String> lines = UtilsMini.readFileToList(path + "robot.txt");
+        for (String apikey : lines) {
+            Connection connection = null;
+            try {
+                connection = CbMysqlClientUtils.createConnection(CbMysqlClientUtils.ConnectType.PROD_FAQ);
+                Statement statement = connection.createStatement();
+                String sql = "SELECT * FROM turing_faq_mapper where api_key='" + apikey + "'";
+                ResultSet rs = statement.executeQuery(sql);
+                while (rs != null && rs.next()) {
+                    String content = apikey + "\t" + rs.getString("map_table");
+                    UtilsMini.writeToTxt(path + "mapper.txt", content);
+                }
+                rs.close();
+            } catch (Exception e) {
+                // TODO: handle exception
+                e.printStackTrace();
+                System.out.println(e.getMessage());
+                UtilsMini.writeToTxt(path + "mapper_error.txt", apikey);
             } finally {
                 if (connection != null) {
                     try {

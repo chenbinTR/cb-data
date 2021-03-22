@@ -28,7 +28,10 @@ import java.util.List;
  */
 public class EsTest {
     public static void main(String[] args) {
-        String question = "你就是个神经病";
+        String question = "我今晚吃什么";
+        String[] tableNames = {"turing_faq_07"};
+        RequestType requestType = RequestType.FAQ_CS;
+        String account = "dde0b179afa4430c8d52cb0eee59b228";
 
         TimeValue clientTimeout = TimeValue.timeValueMillis(700L);
         TimeValue serverTimeout = TimeValue.timeValueMillis(300L);
@@ -47,7 +50,7 @@ public class EsTest {
             }
         }
         BoolQueryBuilder boolBuilder = QueryBuilders.boolQuery().must(multiMatch);
-        String[] tableNames = {"chat_question"};
+
         //过滤表
         if (tableNames != null && tableNames.length > 0) {
             BoolQueryBuilder tableNamesQueryBuild = QueryBuilders.boolQuery();
@@ -59,10 +62,10 @@ public class EsTest {
         }
 
         // 索引
-        Indices indices = Indices.getIndicesByType(RequestType.CHAT);
+        Indices indices = Indices.getIndicesByType(requestType);
         // 创建client
-        SearchResponse response = getClient(RequestType.CHAT).prepareSearch(indices.getIndex())
-//                .setRouting(userAccount)
+        SearchResponse response = getClient(requestType).prepareSearch(indices.getIndex())
+                .setRouting(account)
                 .setTimeout(serverTimeout)
                 .setQuery(boolBuilder)
                 .setFrom(0)
@@ -80,6 +83,7 @@ public class EsTest {
         }
         TransportClient client = null;
         List<EsAddress> addresses = new ArrayList<>();
+        addresses.add(EsAddress.ALPHA_ES);
         Settings settings = Settings.builder()
                 .put("cluster.name", "elasticsearch")
                 .build();
