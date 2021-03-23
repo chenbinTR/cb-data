@@ -10,20 +10,20 @@ import java.util.List;
 
 public class FaqPreprocess {
     public static void main(String[] args) {
-        List<String> lines = Utils.readFileToList("E:\\faq_simi.txt");
+        List<String> lines = Utils.readFileToList("C:\\Users\\CheN\\Downloads\\faq.txt");
         for (String line : lines) {
             JSONObject item = JSONObject.parseObject(line);
-//            String keywords = item.getString("keywords");
-//            if (StringUtils.isNotBlank(keywords)) {
-//                if (keywords.equals("[]") || keywords.indexOf("多个关键词") > -1) {
-//                    keywords = null;
-//                } else {
-//                    JSONArray words = JSONArray.parseArray(keywords);
-//                    keywords = StringUtils.join(words.toArray(), ",");
-//                    System.out.println(keywords);
-//                }
-//                item.put("keywords", keywords);
-//            }
+            String keywords = item.getString("keywords");
+            if (StringUtils.isNotBlank(keywords)) {
+                if (keywords.equals("[]") || keywords.indexOf("多个关键词") > -1) {
+                    keywords = null;
+                } else {
+                    JSONArray words = JSONArray.parseArray(keywords);
+                    keywords = StringUtils.join(words.toArray(), ",");
+                    System.out.println(keywords);
+                }
+                item.put("keywords", keywords);
+            }
             String question = item.getString("question");
             try {
                 String preprocess = PreProcessService.process(question);
@@ -33,7 +33,7 @@ public class FaqPreprocess {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Utils.writeToTxt("E:\\faq_simi_new.txt", item.toJSONString());
+            Utils.writeToTxt("E:\\faq.txt", item.toJSONString());
         }
     }
 }
