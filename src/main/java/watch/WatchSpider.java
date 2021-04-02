@@ -11,6 +11,7 @@ import org.jsoup.select.Elements;
 import sun.nio.cs.UnicodeEncoder;
 import utils.Utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -29,51 +30,245 @@ public class WatchSpider {
 //        baiduIdiom();
 //        get911();
 //        filter911();
-        bihua3();
-    }
+//        bihua3();
+//        process();
+        new Thread(() -> getBaiduZici()).start();
+        new Thread(() -> getBaiduZici2()).start();
+        new Thread(() -> getBaiduZici3()).start();
 
-    /**
-     * 获取 笔画顺序
-     * @throws UnsupportedEncodingException
-     */
-    private static void bihua3() throws UnsupportedEncodingException {
-        String url = "https://www.hanzi5.com/bishun/%s.html";
-        List<String> lines = Utils.readFileToList("E:\\1.txt");
+        System.out.println("start");
+    }
+    private static void getBaiduZici3() {
+        List<String> lines = Utils.readFileToList("E:\\13.txt");
+        String url = "https://dict.baidu.com/s?wd=%s&from=zici";
         for (String line : lines) {
+            boolean isValid = false;
             try {
-                Thread.sleep(RandomUtil.randomInt(500, 3000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            String word = UnicodeUtil.toUnicode(line).replace("\\u","");
-            String urlTmp = String.format(url, word);
-            String order = "";
-            try {
-                Document doc = Jsoup.connect(urlTmp)
-                        .timeout(2000)
-                        .get();
-                Elements elements = doc.select(".hanzi5-article-hanzi-info").select("tr");
+//                Thread.sleep(RandomUtil.randomInt(500, 1000));
+                Document document = null;
+                document = Jsoup.connect(String.format(url, URLEncoder.encode(line, "UTF-8"))).timeout(5000).get();
+                Element ele = document.select("div.tab-content").get(0);
+                Elements elements = ele.select("dl");
                 for (Element element : elements) {
-                    if(element.text().indexOf("笔顺编码")>-1){
-                        order = element.select(".hanzi5-article-hanzi-info-td2").text();
+                    String pinyin = element.select("dt.pinyin").text().trim();
+                    String explantion = element.select("dd").text().trim();
+                    if (StringUtils.isNotBlank(pinyin)) {
+                        isValid = true;
+                        Utils.writeToTxt("E:\\zici_baidu.txt", line, pinyin, explantion);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Utils.writeToTxt("E:\\order.txt", line, order);
+            if (!isValid) {
+                Utils.writeToTxt("E:\\zici_baidu_error.txt", line);
+            }
+        }
+
+    }
+    private static void getBaiduZici2() {
+        List<String> lines = Utils.readFileToList("E:\\12.txt");
+        String url = "https://dict.baidu.com/s?wd=%s&from=zici";
+        for (String line : lines) {
+            boolean isValid = false;
+            try {
+//                Thread.sleep(RandomUtil.randomInt(500, 1000));
+                Document document = null;
+                document = Jsoup.connect(String.format(url, URLEncoder.encode(line, "UTF-8"))).timeout(5000).get();
+                Element ele = document.select("div.tab-content").get(0);
+                Elements elements = ele.select("dl");
+                for (Element element : elements) {
+                    String pinyin = element.select("dt.pinyin").text().trim();
+                    String explantion = element.select("dd").text().trim();
+                    if (StringUtils.isNotBlank(pinyin)) {
+                        isValid = true;
+                        Utils.writeToTxt("E:\\zici_baidu.txt", line, pinyin, explantion);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (!isValid) {
+                Utils.writeToTxt("E:\\zici_baidu_error.txt", line);
+            }
+        }
+
+    }
+    private static void getBaiduZici() {
+        List<String> lines = Utils.readFileToList("E:\\11.txt");
+        String url = "https://dict.baidu.com/s?wd=%s&from=zici";
+        for (String line : lines) {
+            boolean isValid = false;
+            try {
+//                Thread.sleep(RandomUtil.randomInt(500, 1000));
+                Document document = null;
+                document = Jsoup.connect(String.format(url, URLEncoder.encode(line, "UTF-8"))).timeout(5000).get();
+                Element ele = document.select("div.tab-content").get(0);
+                Elements elements = ele.select("dl");
+                for (Element element : elements) {
+                    String pinyin = element.select("dt.pinyin").text().trim();
+                    String explantion = element.select("dd").text().trim();
+                    if (StringUtils.isNotBlank(pinyin)) {
+                        isValid = true;
+                        Utils.writeToTxt("E:\\zici_baidu.txt", line, pinyin, explantion);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (!isValid) {
+                Utils.writeToTxt("E:\\zici_baidu_error.txt", line);
+            }
+        }
+
+    }
+
+    private static void process() {
+        List<String> lines = Utils.readFileToList("E:\\DICT_DATA\\handian1\\2.txt");
+
+        for (String line : lines) {
+            String[] contents = line.split("\t");
+            String word = contents[0];
+            String pinyin = contents[1];
+
+            String[] means = contents[2].split("\\|\\|\\|");
+            List<String> explainS = new ArrayList<>();
+            List<String> zucis = new ArrayList<>();
+            for (String mean : means) {
+                String explain = "";
+                String zuci = "";
+                if (mean.indexOf("：") > -1) {
+                    explain = mean.substring(0, mean.indexOf("："));
+                    zuci = mean.substring(mean.indexOf("：") + 1).replace("～", word);
+                } else {
+                    explain = mean;
+                }
+                explainS.add(explain);
+                if (StringUtils.isNotBlank(zuci)) {
+                    zucis.add(zuci);
+                }
+            }
+            Utils.writeToTxt("E:\\DICT_DATA\\handian1\\3.txt", word, pinyin, JSONObject.toJSONString(explainS), JSONObject.toJSONString(zucis));
+        }
+    }
+
+    private static void parseTranslate() {
+        List<String> fileNames = Utils.getPathFileName("E:\\DICT_DATA\\handian\\");
+        for (String fileName : fileNames) {
+            try {
+                String str = Utils.readFileToString(new File(fileName));
+                Document doc = Jsoup.parse(str);
+                // 汉字
+                String word = fileName.substring(fileName.lastIndexOf("\\") + 1, fileName.lastIndexOf("\\") + 2);
+
+                Elements elements = doc.select("div.enbox p");
+                for (Element element : elements) {
+                    System.out.println(element);
+                    if (element.text().indexOf("英语") > -1) {
+                        Utils.writeToTxt("E:\\cn_chat_trans.txt", word, element.text().replace("英语", ""));
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+//
+    }
+
+    private static void parseHtml() {
+        List<String> fileNames = Utils.getPathFileName("E:\\DICT_DATA\\handian\\");
+        for (String fileName : fileNames) {
+            try {
+                String str = Utils.readFileToString(new File(fileName));
+                Document doc = Jsoup.parse(str);
+                // 汉字
+                String word = fileName.substring(fileName.lastIndexOf("\\") + 1, fileName.lastIndexOf("\\") + 2);
+
+                // 释义
+                // 笔顺
+//                    String bishun = doc.select("td .z_bis2").text();
+                // 笔画
+                // 部首
+                String radicals = "";
+                // 结构
+                String jiegou = "";
+                Elements elements1 = doc.select("td .dsk_2_1");
+                for (Element element : elements1) {
+                    if (element.text().indexOf("结构") > -1) {
+                        jiegou = element.text();
+                        break;
+                    }
+                }
+                Elements elements2 = doc.select("div.content.definitions.jnr");
+                Elements eles = elements2.get(0).children().not("hr");
+                boolean isValid = false;
+                String pinyin = "";
+                for (Element element : eles) {
+                    if (isValid) {
+                        isValid = false;
+                        pinyin += "\t";
+                        pinyin += element.html().replace("\r", "").replace("\n", "").replace("\t", "").trim();
+                        Utils.writeToTxt("E:\\DICT_DATA\\handian1\\1.txt", word, pinyin);
+                        pinyin = "";
+                    }
+                    String temp = element.select("span.dicpy span .ptr").toString();
+                    if (StringUtils.isNoneBlank(temp)) {
+                        isValid = true;
+                        pinyin = element.select("span.dicpy").text().trim();
+                        pinyin = pinyin.substring(0, pinyin.indexOf(" "));
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utils.writeToTxt("E:\\DICT_DATA\\html_error.txt", fileName);
+            }
+        }
+//
+    }
+
+    /**
+     * 获取 笔画顺序
+     *
+     * @throws UnsupportedEncodingException
+     */
+    private static void bihua3() throws UnsupportedEncodingException {
+        String url = "https://www.zdic.net/hans/%s";
+        List<String> lines = Utils.readFileToList("E:\\DICT_DATA\\error.txt");
+        for (String line : lines) {
+            try {
+                Thread.sleep(RandomUtil.randomInt(500, 1000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            String word = URLEncoder.encode(line, "utf-8");
+            String urlTmp = String.format(url, word);
+            String order = "";
+            try {
+                Document doc = Jsoup.connect(urlTmp)
+                        .timeout(5000)
+                        .get();
+                Elements elements = doc.select(".res_c_center");
+                for (Element element : elements) {
+                    Utils.writeToTxt("E:\\DICT_DATA\\handian\\" + line + ".txt", element.toString());
+                }
+            } catch (Exception e) {
+                Utils.writeToTxt("E:\\DICT_DATA\\error1.txt", line);
+                e.printStackTrace();
+            }
         }
     }
 
     /**
      * 获取 笔画顺序名称
+     *
      * @throws UnsupportedEncodingException
      */
     private static void bihua2() throws UnsupportedEncodingException {
         String url = "http://bishun.shufaji.com/0x%s.html";
         List<String> lines = Utils.readFileToList("E:\\1.txt");
         for (String line : lines) {
-            String word = UnicodeUtil.toUnicode(line).replace("\\u","");
+            String word = UnicodeUtil.toUnicode(line).replace("\\u", "");
             String urlTmp = String.format(url, word);
             String name = "";
             try {
@@ -88,6 +283,7 @@ public class WatchSpider {
             Utils.writeToTxt("E:\\3.txt", line, name);
         }
     }
+
     /**
      * https://bihua.51240.com/e5a5b3__bihuachaxun/
      * 获取 笔画顺序名称

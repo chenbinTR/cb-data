@@ -633,4 +633,23 @@ public class Utils {
             }
         }
     }
+
+    public static String readFileToString(File file) {
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(file), "utf-8"))) {
+                String temp;
+                StringBuilder stringBuilder = new StringBuilder();
+                while (null != (temp = reader.readLine())) {
+                    if (StringUtils.isNotBlank(temp.trim())) {
+                        stringBuilder.append(temp.trim());
+                    }
+                }
+                return stringBuilder.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
 }
