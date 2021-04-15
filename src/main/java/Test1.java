@@ -1,26 +1,18 @@
-import cn.hutool.core.util.ArrayUtil;
-import cn.hutool.crypto.digest.MD5;
-import cn.hutool.extra.pinyin.PinyinUtil;
-import com.alibaba.fastjson.JSONObject;
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import org.apache.commons.codec.digest.Md5Crypt;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.RandomUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import utils.SymmetricEncoder;
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
+import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import utils.Utils;
 
 import java.io.File;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 /**
  * @author ChenOT
@@ -44,21 +36,54 @@ public class Test1 {
         }
     }
 
+    private static void process() {
+        ExcelReader excelReader = ExcelUtil.getReader(new File("E:\\DICT_DATA\\入库\\成语\\成语词库.xlsx"));
+        List<Map<String, Object>> readAll = excelReader.readAll();
+        for (Map<String, Object> map : readAll) {
+            try {
+                String word = MapUtils.getString(map, "word", "").trim();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static String replaceStartEndPunctuation(String str) {
+        str = Pattern.compile("^[^a-zA-Z\u4e00-\u9fa5]+").matcher(str).replaceAll("");
+        str = Pattern.compile("[^a-zA-Z\u4e00-\u9fa5]+$").matcher(str).replaceAll("");
+//        str = Pattern.compile("$\\pP+").matcher(str).replaceAll("");
+        return str;
+    }
+
     public static void main(String[] args) {
-        String stri="ss&*(,.~1如果@&(^-自己!!知道`什`么#是$苦%……Z，&那*()么一-=定——+告诉::;\"'/?.,><[]{}\\||别人什么是甜。";
-        System.out.println(stri);
+        String str = "，,'。     a      你'好    。";
+        System.out.println(replaceStartEndPunctuation(str));
+//        process();
+//        System.out.println("你好adbc c/F".replaceAll("[a-zA-z]","").trim());
+//        List<String> lines = Utils.readFileToList("E:\\1.txt");
 
-        String stri1=stri.replaceAll("\\p{Punct}","");//不能完全清除标点
-        System.out.println(stri1);
+//        Set<String> lineSet = lines.stream().collect(Collectors.toSet());
+//        System.out.println(lines.size());
+//        System.out.println(lineSet.size());
 
-        String stri2=stri.replaceAll("\\pP","");//完全清除标点
-        System.out.println(stri2);
-
-        String stri3=stri.replaceAll("\\p{P}","");//同上,一样的功能
-        System.out.println(stri3);
-
-        String stri4=stri.replaceAll("[\\pP\\p{Punct}]","");//清除所有符号,只留下字母 数字 汉字 共3类.
-        System.out.println(stri4);
+//        List<String> files = Utils.getPathFileName("E:\\小字慢");
+//        files.forEach(System.out::println);
+//        Consumer<String> stringConsumer = e -> {
+//            e =
+//        };
+//        files.forEach(stringConsumer);
+//        files.forEach(e -> {
+//            e = e.replace("E:\\小字慢\\", "");
+//        });
+//        files.forEach(System.out::println);
+//        files.forEach(stringConsumer);
+//        List<String> filesNew = new ArrayList<>();
+//        files.forEach(e -> filesNew.add(e.replace("E:\\小字慢\\", "")));
+//        lines.forEach(e->{
+//            if(!filesNew.contains(e)){
+//                System.out.println(e);
+//            }
+//        });
     }
 
     public static void toPinyin(String str) {
