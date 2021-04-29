@@ -3,10 +3,10 @@ package java8;
 public class Person {
 
     private String firstName, lastName, job, gender;
-    private int salary, age;
+    private Integer salary, age;
 
     public Person(String firstName, String lastName, String job,
-                  String gender, int age, int salary) {
+                  String gender, Integer age, int salary) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;

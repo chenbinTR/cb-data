@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class StreamLambda {
     private List<Person> javaProgrammers = new ArrayList<Person>() {
         {
-            add(new Person("", "Jaycob", "Java programmer", "male", 43, 2000));
+            add(new Person("", "Jaycob", "Java programmer", "male", null, 2000));
             add(new Person("", "Brittany", "Java programmer", "female", 23, 1500));
             add(new Person("Floyd", "Donny", "Java programmer", "male", 33, 1800));
             add(new Person("Sindy", "Jonie", "Java programmer", "female", 32, 1600));
@@ -42,6 +42,12 @@ public class StreamLambda {
             add(new Person("Evonne", "Shari", "PHP programmer", "female", 40, 1800));
         }
     };
+
+    @Test
+    public void testsss(){
+        Set<Integer> ages = javaProgrammers.stream().map(Person::getAge).collect(Collectors.toSet());
+        ages.forEach(System.out::println);
+    }
 
     /**
      * sort测试

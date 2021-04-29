@@ -1,18 +1,19 @@
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import utils.Utils;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 /**
  * @author ChenOT
@@ -37,72 +38,38 @@ public class Test1 {
     }
 
     private static void process() {
-        ExcelReader excelReader = ExcelUtil.getReader(new File("E:\\DICT_DATA\\入库\\成语\\成语词库.xlsx"));
+        ExcelReader excelReader = ExcelUtil.getReader(new File("E:\\汉字-音意.xlsx"));
         List<Map<String, Object>> readAll = excelReader.readAll();
         for (Map<String, Object> map : readAll) {
             try {
-                String word = MapUtils.getString(map, "word", "").trim();
+                String id = MapUtils.getString(map, "id", "").trim();
+                String word = MapUtils.getString(map, "字", "").trim();
+                String pinyin = MapUtils.getString(map, "拼音", "").trim();
+                String explain = MapUtils.getString(map, "释义（|）", "").trim();
+                String combinWord = MapUtils.getString(map, "组词（|）", "").trim();
+                List<String> strings = new ArrayList<>();
+                if (StringUtils.isNotBlank(combinWord)) {
+                    String[] items = combinWord.split("\\|");
+                    for (String item : items) {
+                        if (StringUtils.isBlank(item) || item.length() > 4) {
+                            continue;
+                        }
+                        strings.add(item.trim());
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(strings)) {
+                    combinWord = StringUtils.join(strings.toArray(), "|");
+                }
+                Utils.writeToTxt("E:\\111.txt", id, word, pinyin, explain, combinWord);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static String replaceStartEndPunctuation(String str) {
-        str = Pattern.compile("^[^a-zA-Z\u4e00-\u9fa5]+").matcher(str).replaceAll("");
-        str = Pattern.compile("[^a-zA-Z\u4e00-\u9fa5]+$").matcher(str).replaceAll("");
-//        str = Pattern.compile("$\\pP+").matcher(str).replaceAll("");
-        return str;
-    }
-
-    public static void main(String[] args) {
-        String str = "，,'。     a      你'好    。";
-        System.out.println(replaceStartEndPunctuation(str));
-//        process();
-//        System.out.println("你好adbc c/F".replaceAll("[a-zA-z]","").trim());
-//        List<String> lines = Utils.readFileToList("E:\\1.txt");
-
-//        Set<String> lineSet = lines.stream().collect(Collectors.toSet());
-//        System.out.println(lines.size());
-//        System.out.println(lineSet.size());
-
-//        List<String> files = Utils.getPathFileName("E:\\小字慢");
-//        files.forEach(System.out::println);
-//        Consumer<String> stringConsumer = e -> {
-//            e =
-//        };
-//        files.forEach(stringConsumer);
-//        files.forEach(e -> {
-//            e = e.replace("E:\\小字慢\\", "");
-//        });
-//        files.forEach(System.out::println);
-//        files.forEach(stringConsumer);
-//        List<String> filesNew = new ArrayList<>();
-//        files.forEach(e -> filesNew.add(e.replace("E:\\小字慢\\", "")));
-//        lines.forEach(e->{
-//            if(!filesNew.contains(e)){
-//                System.out.println(e);
-//            }
-//        });
-    }
-
-    public static void toPinyin(String str) {
-    }
-
-    public static List<String> splitString(String str, String... separators) {
-        List<String> contents = new ArrayList<>();
-        contents.add(str);
-
-
-        for (String seprator : separators) {
-            List<String> tempList = new ArrayList<>();
-            for (String content : contents) {
-                tempList.addAll(Arrays.asList(content.split(seprator)));
-            }
-            contents.clear();
-            contents.addAll(tempList);
-        }
-        return contents;
+    public static void main(String[] args) throws UnsupportedEncodingException {
+        System.out.println(URLEncoder.encode("你", "GBK"));
+        System.out.println(URLDecoder.decode("%C4%E3", "GBK"));
     }
 
 }

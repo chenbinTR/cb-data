@@ -1,7 +1,10 @@
 package generics;
 
+import com.alibaba.fastjson.JSONObject;
+
 /**
  * 泛型方法
+ *
  * @author ChenOT
  * @date 2019-08-05
  * @see
@@ -10,6 +13,7 @@ package generics;
 public class GenericMethodTest {
     /**
      * 泛型方法
+     *
      * @param inputArray
      * @param <E>
      */
@@ -19,6 +23,10 @@ public class GenericMethodTest {
             System.out.printf("%s ", element);
         }
         System.out.println();
+    }
+
+    public static <T> T parseObject(String text, Class<T> t) {
+        return JSONObject.parseObject(text, t);
     }
 
     public static void main(String args[]) {
@@ -35,5 +43,11 @@ public class GenericMethodTest {
 
         System.out.println("\n字符型数组元素为:");
         printArray(charArray);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("text", 1);
+        jsonObject.put("code", "2");
+
+        System.out.println(parseObject(jsonObject.toJSONString(), Test.class));
     }
 }
