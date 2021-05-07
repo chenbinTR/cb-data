@@ -12,15 +12,16 @@ public class TestRedis {
     private static Jedis jedis;
 
     public static void main(String[] args) {
-        RedisUtil.init(RedisServerEnum.PROD_CHAT);
+        RedisUtil.init(RedisServerEnum.DEV_CHAT);
         jedis = RedisUtil.getJedis();
-        testString();
+        jedis.set("test", "test");
     }
 
     /**
      * redis操作字符串
      */
     private static void testString() {
+
 //        String[] qidList = qids.split("\\|");
 //        for(String qid:qidList){
 //            String key = "dialogue:"+qid.trim();

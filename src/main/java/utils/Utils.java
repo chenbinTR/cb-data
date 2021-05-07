@@ -388,6 +388,54 @@ public class Utils {
         return httpPost(param, url, "UTF-8");
     }
 
+    public static List<String> httpPostList(String param, String url) {
+        String encode = "UTF-8";
+        List<String> res = new ArrayList<>();
+        OutputStreamWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) realUrl
+                    .openConnection();
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
+            conn.setRequestProperty("Content-Type", "application/json");
+//            conn.setRequestProperty("Auth-Token", "f8dfe5d353234c71ac9bafb410ae62de");
+            conn.connect();
+            out = new OutputStreamWriter(conn.getOutputStream(), encode);
+            out.write(param);
+
+            out.flush();
+            out.close();
+            //
+            in = new BufferedReader(new InputStreamReader(
+                    conn.getInputStream(), encode));
+            String line = "";
+            while ((line = in.readLine()) != null) {
+                res.add(line.trim());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return res;
+    }
+
     /**
      * http post
      *
@@ -407,8 +455,8 @@ public class Utils {
             conn.setDoInput(true);
             conn.setUseCaches(false);
             conn.setRequestMethod("POST");
-            conn.setConnectTimeout(1000);
-            conn.setReadTimeout(1000);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(10000);
             conn.setRequestProperty("Content-Type", "application/json");
 //            conn.setRequestProperty("Auth-Token", "f8dfe5d353234c71ac9bafb410ae62de");
             conn.connect();

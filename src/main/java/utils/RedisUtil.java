@@ -15,7 +15,8 @@ public class RedisUtil {
             config.setMaxTotal(100);
             config.setMaxIdle(100);
             config.setMinIdle(50);
-            jedisPool = new JedisPool(config, SymmetricEncoder.AESDncode(redisServer.getHost()), redisServer.getPort(), 20*1000, redisServer.getPassword(), redisServer.getDatabase());
+            jedisPool = new JedisPool(config, redisServer.getHost(), redisServer.getPort(), 20*1000, redisServer.getPassword(), redisServer.getDatabase());
+//            jedisPool = new JedisPool(config, SymmetricEncoder.AESDncode(redisServer.getHost()), redisServer.getPort(), 20*1000, redisServer.getPassword(), redisServer.getDatabase());
         } catch (Exception e) {
             e.printStackTrace();
         }

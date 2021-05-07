@@ -7,7 +7,7 @@ package utils;
  * @since
  */
 public enum  RedisServerEnum {
-    DEV_CHAT("zvULJSCCVBv5tnSwz9v+CPMz/M8KVOw2rRWfToms9k8=",6383, 0, "nlpturing2016"),
+    DEV_CHAT("192.168.10.33",6379, 2, "nlpturing2016"),
     ALPHA_CHAT("RA/hiaR71pDWmOvuSeqrab24IrTPGYElP4pvSJR9ZOE=",6379, 2, "nlpturing2016"),
     PROD_CHAT("LebHZyyZV+MQ3dZnyaUmAw==",6386, 2, "nlpturing2016"),
     PROD_SHIELD("YwZHUt2GKTDmfbQQ0uBwVXgZNh40KfEFQneX79OAqnQemQtOOWRrlnckTn5nacqb",6393, 0, null),

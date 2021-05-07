@@ -70,6 +70,8 @@ public class Test1 {
     public static void main(String[] args) throws UnsupportedEncodingException {
         System.out.println(URLEncoder.encode("你", "GBK"));
         System.out.println(URLDecoder.decode("%C4%E3", "GBK"));
+        String se = "";
+        System.out.println("　　这首诗");
     }
 
 }

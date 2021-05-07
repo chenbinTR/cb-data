@@ -1,5 +1,7 @@
 package regex;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,13 +35,12 @@ public class BracketDemo {
 //        Matcher matcher = Pattern.compile("要(?:你|他们)").matcher("我要你跟我说，也要他们说");
         Matcher matcher = Pattern.compile("要(你|他们)").matcher("我要你跟我说，也要他们说");
         while (matcher.find()) {
-            System.out.println(matcher.group(0));
             System.out.println(matcher.group());
         }
 
         // 小括号 (?=pattern)
         System.out.println("(?=pattern)");
-        matcher = Pattern.compile("Windows(?=95|98|NT|2000)").matcher("Windows2000");
+        matcher = Pattern.compile("Windows(?=95|98|NT|2000)").matcher("Windows20001");
         while (matcher.find()) {
             System.out.println(matcher.group());
         }

@@ -74,7 +74,9 @@ public class TtsRequest implements Serializable {
     /**
      * 双子星专用参数
      */
-    ///@Setter @Getter private int syl_flag;
+    @Setter
+    @Getter
+    private int syl_flag;
     /**
      * 跟踪字符串，调试时定位问题
      */
