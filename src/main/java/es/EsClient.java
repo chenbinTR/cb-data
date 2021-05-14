@@ -28,7 +28,7 @@ public class EsClient {
         TransportAddress transportAddress = null;
         try {
             transportAddress = new TransportAddress(
-                    InetAddress.getByName(SymmetricEncoder.AESDncode(address.getHost())), address.getPort());
+                    InetAddress.getByName(address.getHost()), address.getPort());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

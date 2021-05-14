@@ -18,7 +18,9 @@ import java.util.Set;
 public class DictSpider {
     public static void main(String[] args) {
         Set<String> urls = Utils.readFileToSet("E:\\dict_url.txt");
+        int count = 0;
         for (String url : urls) {
+            System.out.println(count++);
             try {
                 Document document = Jsoup.connect(url).timeout(5000).get();
                 Elements elementsCi = document.select("div.layout.nfo ul");
@@ -63,7 +65,7 @@ public class DictSpider {
                 jsonObject.put("fanyici", fanyiciList);
                 jsonObject.put("jinyici", jinyiciList);
 
-                Utils.writeToTxt("E:\\dict_s_a.txt", jsonObject.toJSONString());
+                Utils.writeToTxt("E:\\dict_phrase.txt", jsonObject.toJSONString());
             } catch (Exception e) {
                 e.printStackTrace();
             }

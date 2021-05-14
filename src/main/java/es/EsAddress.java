@@ -6,11 +6,12 @@ package es;
  * @author kong
  */
 public enum EsAddress {
+
     ALPHA_ES("47.93.47.187", 9301),
-    BETA_ES("hPN4hxW+E+aTG7VrIZCqHg==", 9301),
-    PROD_ES_1("TWzsEt9wEe2UaBFVIV6gQg==", 9301),
+    BETA_ES("121.199.52.145", 9301),
+    PROD_ES_1("101.201.140.59", 9301),
     LOCAL("localhost", 9300),
-    PROD_ES_2("DAflfIBOB8Qh7UrIOsN0+w==", 9301);
+    PROD_ES_2("47.95.29.224", 9301);
     /**
      * host地址.
      */

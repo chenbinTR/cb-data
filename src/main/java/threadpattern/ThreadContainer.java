@@ -17,7 +17,7 @@ public final class ThreadContainer {
     public static volatile long TIME_OUT = 40L;
 
     private static ExecutorService service = new ThreadPoolExecutor(
-            3, 3,
+            1, 1,
             0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue());
 
     public static ExecutorService getExecutor() {

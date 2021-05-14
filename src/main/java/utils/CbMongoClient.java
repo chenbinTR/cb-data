@@ -17,11 +17,11 @@ public class CbMongoClient {
 
 
    public enum MongoServer{
-        ALPHA("rzjjNPe9NCW58FdMKKYyRQ==", "27018", "admin", "admin", "in69M6XrKTzegAel"),
-        DEV("r1PXSYlxTBUCf3B/pS6bnA==", "27023", "admin", "admin", "password"),
-        PROD("icLZPgfn4zP5d72die7d8A==", "27025", "admin", "admin", "password"),
-       PLATFORM_PROD("3FpSYqIJ5LV/tPTTVctjTA==","27017","admin", "admin", "password"),
-       Data_PROD("3FpSYqIJ5LV/tPTTVctjTA==","27018","admin", "admin", "password"),
+        ALPHA("182.92.65.254", "27018", "admin", "admin", "in69M6XrKTzegAel"),
+        DEV("192.168.10.29", "27023", "admin", "admin", "password"),
+        PROD("10.26.50.196", "27025", "admin", "admin", "password"),
+       PLATFORM_PROD("10.25.91.217","27017","admin", "admin", "password"),
+       Data_PROD("10.25.91.217","27018","admin", "admin", "password"),
        ;
         private String host;
         private String port;
@@ -38,7 +38,7 @@ public class CbMongoClient {
         }
     }
     public static MongoClient getMongoClientInstance(MongoServer mongoServer){
-        ServerAddress serverAddress = new ServerAddress(SymmetricEncoder.AESDncode(mongoServer.host), Integer.valueOf(mongoServer.port));
+        ServerAddress serverAddress = new ServerAddress(mongoServer.host, Integer.valueOf(mongoServer.port));
         List<ServerAddress> addres = new ArrayList<ServerAddress>();
         addres.add(serverAddress);
         MongoCredential credential = MongoCredential.createScramSha1Credential(mongoServer.user, mongoServer.db, mongoServer.password.toCharArray());

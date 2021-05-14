@@ -13,7 +13,7 @@ public class TestAccess {
 
     public void connectAccessFile() {
         try {
-            String surl = "jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};DBQ=E:\\DICT_DATA\\中文 - 副本\\英译汉\\292\\SpiderResult.mdb";
+            String surl = "jdbc:odbc:driver={Microsoft Access Driver (*.mdb)};DBQ=E:\\DICT_DATA\\中文-副本\\SpiderResult.mdb";
             Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
             conn = DriverManager.getConnection(surl, null, null);
             System.out.println("连接成功");
