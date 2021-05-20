@@ -18,8 +18,7 @@ public class Test {
     private static final Pattern CN_CHAR_PATTERN = Pattern.compile("[\u4e00-\u9fa5]");
 
     public static void main(String[] args) {
-
-        splitNotes("寥（liáo）落：寂寞冷落。行宫：皇帝在京城之外的宫殿。这里指当时东都洛阳的皇帝行宫上阳宫。宫花：行宫里的花。白头宫女：据白居易《上阳白发人》，一些宫女天宝末年被“潜配”到上阳宫，在这冷宫里一闭四十多年，成了白发宫人。说：谈论。玄宗：指唐玄宗。");
+        biaodian();
     }
 
     public static void biaodian(){
@@ -41,15 +40,6 @@ public class Test {
         String str5 = stri.replaceAll("[^\u4e00-\u9fa5]", "");
         System.out.println(str5);
 
-        Matcher matcher = TODAY.matcher("我知道今天会，明早下雨");
-        while (matcher.find()) {
-            System.out.println(matcher.groupCount());
-//            System.out.println(matcher.start(1));
-//            System.out.println(matcher.end(1));
-            System.out.println(matcher.group());
-//            System.out.println(matcher.group(1));
-//            System.out.println(matcher.group());
-        }
     }
 
     public static List<String> splitNotes(String text) {

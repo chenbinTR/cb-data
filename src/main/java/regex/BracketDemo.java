@@ -1,5 +1,7 @@
 package regex;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,27 +15,59 @@ import java.util.regex.Pattern;
  * @see
  */
 public class BracketDemo {
-    public static void main(String[] args) {
+    /**
+     * 小括号()
+     */
+    @Test
+    public void testParentheses(){
+        // 与|搭配使用，表示或
+        Pattern pattern = Pattern.compile("(你好|你是)(你好啊|他是)");
+        Matcher matcher = pattern.matcher("你是你好啊");
+        System.out.println(matcher.matches());
+        while (matcher.find()) {
+            System.out.println(matcher.group());
+        }
+
+    }
+
+    /**
+     * 中括号[]
+     */
+    @Test
+    public void testBrackets(){
+        // 与|搭配使用，表示或
+        Pattern pattern = Pattern.compile("[a-z0-9]");
+        Matcher matcher = pattern.matcher("你是12你ab123好啊下次再见");
+        while (matcher.find()) {
+            System.out.println(matcher.group());
+//            System.out.println(matcher.start());
+//            System.out.println(matcher.end());
+        }
+
+    }
+
+    @Test
+    public void testKuohao(){
         // 是否contains 2-10个你
-        Pattern patternBig = Pattern.compile("你{2,10}");
-        Matcher matcherBig = patternBig.matcher("我知道你你大爷的");
-        while (matcherBig.find()) {
-            System.out.println(matcherBig.group());
-            System.out.println(matcherBig.start());
-            System.out.println(matcherBig.end());
+        Pattern pattern = Pattern.compile("你{2,10}");
+        Matcher matcher = pattern.matcher("我知道你你大爷的");
+        while (matcher.find()) {
+            System.out.println(matcher.group());
+            System.out.println(matcher.start());
+            System.out.println(matcher.end());
         }
 
         // 中括号 []，匹配其中的任意一个，|并没有用
-        Pattern patternMiddle = Pattern.compile("[^你我他0-9]");
-        Matcher matcherMidele = patternMiddle.matcher("看看他吧，我12345知道，你|是谁");
-        while (matcherMidele.find()) {
-            System.out.println(matcherMidele.group());
+        pattern = Pattern.compile("[^你我他0-9]");
+        matcher = pattern.matcher("看看他吧，我12345知道，你|是谁");
+        while (matcher.find()) {
+            System.out.println(matcher.group());
         }
 
         // 小括号 (?:pattern)
         System.out.println("(?:pattern)");
 //        Matcher matcher = Pattern.compile("要(?:你|他们)").matcher("我要你跟我说，也要他们说");
-        Matcher matcher = Pattern.compile("要(你|他们)").matcher("我要你跟我说，也要他们说");
+        matcher = Pattern.compile("要(你|他们)").matcher("我要你跟我说，也要他们说");
         while (matcher.find()) {
             System.out.println(matcher.group());
         }

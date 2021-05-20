@@ -1,3 +1,4 @@
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -5,17 +6,19 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import threadpattern.ThreadContainer;
 import utils.Utils;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author ChenOT
@@ -70,39 +73,87 @@ public class Test1 {
     }
 
     public static void main(String[] args) throws UnsupportedEncodingException {
-        int taskCount = 10;
-        long startTime = System.currentTimeMillis();
-        List<Future<String>> futures = new ArrayList<>();
-        for(int i=0; i<taskCount; i++){
-            final int taskId = i;
-            Future<String> f = ThreadContainer.getExecutor().submit(() -> test(taskId));
-            futures.add(f);
-        }
-        for (Future<String> future : futures) {
+        List<Integer> parseTypes = Arrays.asList(new Integer[]{28, 25, 36, 20, 104, 7, 35, 30, 2, 23, 21, 16, 4, 3, 1, 9, 8, 101,106,107,108,109, 27, 6, 5, 37, 38, 10, 11, 39, 102, 103, 10, 50});
+//        String explanation = "你好 | 看见了吧| | 好";
+//        List<String> explanations = Arrays.asList(explanation.split("\\|"));
+//        explanations = explanations.stream().filter(e -> StringUtils.isNotBlank(e)).map(e -> StringUtils.strip(e)).collect(Collectors.toList());
+//        explanations.forEach(System.out::println);
+
+        List<String> results = new ArrayList<>();
+        List<String> lines = FileUtil.readUtf8Lines("C:\\Users\\CheN\\Downloads\\log_202104.txt");
+        for (String line : lines) {
             try {
-                future.get(1, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (TimeoutException e) {
+                if (line.indexOf("2300101") > -1 || line.indexOf("2300102") > -1 || line.indexOf("os.sys.chat") > -1 || line.indexOf("platform.chat") > -1) {
+                    String[] items = line.split("\t");
+                    int parsetype = Integer.valueOf(items[1].trim());
+                    String appkey = items[2].trim();
+                    if (!parseTypes.contains(parsetype)) {
+                        continue;
+                    }
+                    int channel = 0;
+                    if (appkey.equals("os.sys.chat")) {
+                        channel = 1;
+                    }
+                    results.add(parsetype + "\t" + channel);
+                    if (results.size() == 100000) {
+                        Utils.writeToTxt("E:\\chat.txt", StringUtils.join(results.toArray(), "\r\n"));
+                        results.clear();
+                    }
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("main 执行完成 "+(System.currentTimeMillis() - startTime));
+        Utils.writeToTxt("E:\\chat.txt", StringUtils.join(results.toArray(), "\r\n"));
 
+//            String word = line.replace("https://dict.cn/search?q=", "");
+//            if(StringUtils.isBlank(word)){
+//                continue;
+//            }
+//            word = StringUtils.strip(word);
+//            word = word.replace("\t", "");
+//            if(word.indexOf(" ")<0){
+//                continue;
+//            }
+//            word = replaceStartEndPunctuation(word);
+//            if(isContainCn(word)){
+//                System.err.println(word);
+//                continue;
+//            }
+//            Utils.writeToTxt("E:\\2.txt", StringUtils.strip(word), "xw", "20");
+//        }
     }
 
-    private static String test(int taskId) {
-        try {
-            System.out.println(Thread.currentThread().getName() + "开始执行"+taskId);
-            Thread.sleep(2001);
-            System.out.println(Thread.currentThread().getName() + "执行完成"+taskId);
-            return "21";
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+    public static boolean isContainCn(String str) {
+        Pattern pattern = Pattern.compile("[^a-zA-Z0-9'\\s\\.\\?-]");
+        Matcher m = pattern.matcher(str);
+        if (m.find()) {
+            return true;
         }
-        return "33";
+        return false;
     }
+
+    /**
+     * 以非汉字、非英文字母开始的所有字符
+     */
+    private static final Pattern START_PUNCTUATION = Pattern.compile("^[^a-zA-Z0-9\u4e00-\u9fa5]+");
+    /**
+     * 以非汉字、非英文字母开始的所有字符
+     */
+    private static final Pattern END_PUNCTUATION = Pattern.compile("[^a-zA-Z0-9\u4e00-\u9fa5]+$");
+
+    /**
+     * 去掉首尾所有非字母汉字
+     *
+     * @param str
+     * @return
+     */
+    public static String replaceStartEndPunctuation(String str) {
+        str = START_PUNCTUATION.matcher(str).replaceAll("");
+        str = END_PUNCTUATION.matcher(str).replaceAll("");
+        return str;
+    }
+
 
 }
