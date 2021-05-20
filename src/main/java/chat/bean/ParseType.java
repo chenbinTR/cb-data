@@ -2,6 +2,7 @@ package chat.bean;
 
 import cn.hutool.core.io.FileUtil;
 import lombok.Data;
+import utils.Utils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,8 +33,21 @@ public class ParseType {
             map.put(parseType.getParseType(), parseType);
         }
         System.out.println(map);
-
-
+        List<String> logs = FileUtil.readUtf8Lines("E:\\1.txt");
+        int count = 0;
+        for (String log : logs) {
+            count += Integer.valueOf(log.split("\t")[2]);
+        }
+        for (String log : logs) {
+            String[] items = log.split("\t");
+            String parseType = items[0];
+            int num = Integer.valueOf(items[2]);
+            double bb = (double)num/(double)count*100;
+            String baifenbi = String.format("%.2f", bb);
+            String type = map.get(parseType).getType();
+            String text = map.get(parseType).getText();
+            Utils.writeToTxt("E://34.txt", parseType, baifenbi, type, text);
+        }
 
     }
 }
