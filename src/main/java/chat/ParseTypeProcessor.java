@@ -9,7 +9,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ChenOT
@@ -17,6 +19,7 @@ import java.util.List;
  */
 public class ParseTypeProcessor {
     private static final List<ParseType> parseTypeList = new ArrayList<>(100);
+    private static final Map<String, ParseType> parseTypeMap = new HashMap<>(100);
 
     static {
         try {
@@ -25,6 +28,7 @@ public class ParseTypeProcessor {
                 String[] items = line.split("\t");
                 parseTypeList.add(new ParseType(items[0], items[1], items[2]));
             }
+            parseTypeList.forEach(parseType -> parseTypeMap.put(parseType.getParseType(), parseType));
         } catch (Exception e) {
             e.printStackTrace();
         }
