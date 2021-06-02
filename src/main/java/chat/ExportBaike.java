@@ -24,35 +24,19 @@ import java.util.List;
  * @since
  */
 public class ExportBaike {
-    private static String file = "/home/developer/bat/chat/%s"+"_"+ LocalDate.now()+".txt";
+    private static String file = "/home/developer/bat/chat/%s" + "_" + LocalDate.now() + ".txt";
     private static final String[] collections = {
-//            "answer",
-//            "dialogue",
-//            "center_word",
-//            "guide_answer",
-//            "guide_intent",
-//            "guide_recommendation",
-//            "high_answer",
-//            "high_dialogue",
-//            "kv",
-//            "kv_config",
-//            "kv_data",
-//            "phrase",
-//            "template",
-//            "linked_answer",
-//            "modify_answer",
-//            "noun_category",
-//            "sensitive_answer",
-//            "sensitive_dialogue",
-//            "humor_high_dialogue20180708",
-//            "humor_high_answer20180708"
-            "baidu"
+            "answers",
+            "yahooanswer"
+
     };
+
     public static void main(String[] args) throws IOException {
-        for(String collectionName:collections){
+        for (String collectionName : collections) {
             exportDb(collectionName);
         }
     }
+
     private static void exportDb(String collectionName) throws IOException {
         MongoClient mongoClient = CbMongoClient.getMongoClientInstance(CbMongoClient.MongoServer.Data_PROD);
         MongoDatabase mongoDatabase = mongoClient.getDatabase("knowledgegraph");
@@ -70,27 +54,27 @@ public class ExportBaike {
             FindIterable<Document> findIterable = collection.find();
             MongoCursor<Document> mongoCursor = findIterable.iterator();
             Document document;
-            List<String> documentList  = new ArrayList<>();
+            List<String> documentList = new ArrayList<>();
             int count = 0;
             while (mongoCursor.hasNext()) {
                 document = mongoCursor.next();
-                try{
-                    JSONObject jsonObject = JSON.parseObject(document.toJson());
-                    JSONObject type = jsonObject.getJSONObject("type");
-                    if(type.toString().indexOf("人物")>-1 || type.toString().indexOf("历史")>-1 || type.toString().indexOf("地理")>-1){
-                        UtilsMini.writeToTxt(path, jsonObject.toJSONString());
-                    }
-//                    documentList.add(document.toJson());
-//                    if(documentList.size() == 10000){
-//                        UtilsMini.writeToTxt(path, StringUtils.join(documentList.toArray(), "\r\n"));
-//                        documentList.clear();
+                try {
+//                    JSONObject jsonObject = JSON.parseObject(document.toJson());
+//                    JSONObject type = jsonObject.getJSONObject("type");
+//                    if (type.toString().indexOf("人物") > -1 || type.toString().indexOf("历史") > -1 || type.toString().indexOf("地理") > -1) {
+//                        UtilsMini.writeToTxt(path, jsonObject.toJSONString());
 //                    }
-                }catch (Exception e){
+                    documentList.add(document.toJson());
+                    if (documentList.size() == 10000) {
+                        UtilsMini.writeToTxt(path, StringUtils.join(documentList.toArray(), "\r\n"));
+                        documentList.clear();
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
-//            UtilsMini.writeToTxt(path, StringUtils.join(documentList.toArray(), "\r\n"));
+            UtilsMini.writeToTxt(path, StringUtils.join(documentList.toArray(), "\r\n"));
         } catch (Exception e) {
             e.printStackTrace();
         }

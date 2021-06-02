@@ -72,56 +72,28 @@ public class Test1 {
         }
     }
 
-    public static void main(String[] args) throws UnsupportedEncodingException {
-        List<Integer> parseTypes = Arrays.asList(new Integer[]{28, 25, 36, 20, 104, 7, 35, 30, 2, 23, 21, 16, 4, 3, 1, 9, 8, 101,106,107,108,109, 27, 6, 5, 37, 38, 10, 11, 39, 102, 103, 10, 50});
-//        String explanation = "你好 | 看见了吧| | 好";
-//        List<String> explanations = Arrays.asList(explanation.split("\\|"));
-//        explanations = explanations.stream().filter(e -> StringUtils.isNotBlank(e)).map(e -> StringUtils.strip(e)).collect(Collectors.toList());
-//        explanations.forEach(System.out::println);
-
-        List<String> results = new ArrayList<>();
-        List<String> lines = FileUtil.readUtf8Lines("C:\\Users\\CheN\\Downloads\\log_202104.txt");
-        for (String line : lines) {
-            try {
-                if (line.indexOf("2300101") > -1 || line.indexOf("2300102") > -1 || line.indexOf("os.sys.chat") > -1 || line.indexOf("platform.chat") > -1) {
-                    String[] items = line.split("\t");
-                    int parsetype = Integer.valueOf(items[1].trim());
-                    String appkey = items[2].trim();
-                    if (!parseTypes.contains(parsetype)) {
-                        continue;
-                    }
-                    int channel = 0;
-                    if (appkey.equals("os.sys.chat")) {
-                        channel = 1;
-                    }
-                    results.add(parsetype + "\t" + channel);
-                    if (results.size() == 100000) {
-                        Utils.writeToTxt("E:\\chat.txt", StringUtils.join(results.toArray(), "\r\n"));
-                        results.clear();
-                    }
+    public static void main(String[] args) {
+        List<String> fencis = FileUtil.readUtf8Lines("E:\\extract_data.txt");
+//        List<String> dicts = FileUtil.readUtf8Lines("E:\\2.txt");
+//        Set<String> results = new HashSet<>();
+//        System.out.println(fencis.size());
+//        System.out.println(dicts.size());
+        List<String> dataList = new ArrayList<>();
+        int count = 0;
+        for (String fenci : fencis) {
+            if (fenci.indexOf("platform.chat") > -1) {
+                try {
+                    dataList.add(StringUtils.strip(fenci.split("\t")[0]));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                if (dataList.size() == 1000) {
+                    Utils.writeToTxt("E:\\5.txt", StringUtils.join(dataList.toArray(), "\r\n"));
+                    dataList.clear();
+                }
             }
         }
-        Utils.writeToTxt("E:\\chat.txt", StringUtils.join(results.toArray(), "\r\n"));
-
-//            String word = line.replace("https://dict.cn/search?q=", "");
-//            if(StringUtils.isBlank(word)){
-//                continue;
-//            }
-//            word = StringUtils.strip(word);
-//            word = word.replace("\t", "");
-//            if(word.indexOf(" ")<0){
-//                continue;
-//            }
-//            word = replaceStartEndPunctuation(word);
-//            if(isContainCn(word)){
-//                System.err.println(word);
-//                continue;
-//            }
-//            Utils.writeToTxt("E:\\2.txt", StringUtils.strip(word), "xw", "20");
-//        }
+        Utils.writeToTxt("E:\\5.txt", StringUtils.join(dataList.toArray(), "\r\n"));
     }
 
 
