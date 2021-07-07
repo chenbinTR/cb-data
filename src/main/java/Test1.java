@@ -1,24 +1,21 @@
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import threadpattern.ThreadContainer;
+import tts.TtsRequest;
 import utils.Utils;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * @author ChenOT
@@ -72,28 +69,81 @@ public class Test1 {
         }
     }
 
+    private static Pattern pattern = Pattern.compile("&#.+?;");
+
     public static void main(String[] args) {
-        List<String> fencis = FileUtil.readUtf8Lines("E:\\extract_data.txt");
-//        List<String> dicts = FileUtil.readUtf8Lines("E:\\2.txt");
-//        Set<String> results = new HashSet<>();
-//        System.out.println(fencis.size());
-//        System.out.println(dicts.size());
-        List<String> dataList = new ArrayList<>();
-        int count = 0;
-        for (String fenci : fencis) {
-            if (fenci.indexOf("platform.chat") > -1) {
+        System.out.println("（1）kaishi".replaceAll("（\\d+）",""));
+    }
+
+    private static void processWord(){
+        List<String> lines = FileUtil.readUtf8Lines("E:\\新建文件夹\\牛津3000核心词.txt");
+        String url = "http://47.94.53.111/universe-dict-v1/query";
+        JSONObject param = new JSONObject();
+        param.put("dicts", Arrays.asList("en_word"));
+        for (String line : lines) {
+            String word = StringUtils.strip(line);
+            param.put("text", word);
+            String result = Utils.httpPost(param.toJSONString(), url);
+            int i = 1;
+            try {
+                if (StringUtils.isBlank(result)) {
+                    i = 0;
+                } else {
+                    JSONObject reJson = JSONObject.parseObject(result);
+                    int code = reJson.getIntValue("code");
+                    if (code != 200) {
+                        i = 0;
+                    } else {
+                        if (reJson.toJSONString().indexOf("en_word") < 0) {
+                            i = 0;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                i = 0;
+            }
+            Utils.writeToTxt("E:\\新建文件夹\\牛津3000核心词-结果.txt", word, i + "", result.replace("\t", ""));
+        }
+    }
+
+    private static void porcessChar() {
+        List<String> lines = FileUtil.readUtf8Lines("E:\\新建文件夹\\中小学必须掌握的3500个常用汉字.txt");
+        String url = "http://47.94.53.111/universe-dict-v1/query";
+        JSONObject param = new JSONObject();
+        param.put("dicts", Arrays.asList("cn_char"));
+        for (String line : lines) {
+            char[] items = StringUtils.strip(line).toCharArray();
+            for (char item : items) {
+                String word = String.valueOf(item);
+                if (StringUtils.isBlank(word)) {
+                    continue;
+                }
+                word = StringUtils.strip(word);
+                param.put("text", word);
+                String result = Utils.httpPost(param.toJSONString(), url);
+                int i = 1;
                 try {
-                    dataList.add(StringUtils.strip(fenci.split("\t")[0]));
+                    if (StringUtils.isBlank(result)) {
+                        i = 0;
+                    } else {
+                        JSONObject reJson = JSONObject.parseObject(result);
+                        int code = reJson.getIntValue("code");
+                        if (code != 200) {
+                            i = 0;
+                        } else {
+                            if (reJson.toJSONString().indexOf("cn_char") < 0) {
+                                i = 0;
+                            }
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    i = 0;
                 }
-                if (dataList.size() == 1000) {
-                    Utils.writeToTxt("E:\\5.txt", StringUtils.join(dataList.toArray(), "\r\n"));
-                    dataList.clear();
-                }
+                Utils.writeToTxt("E:\\新建文件夹\\中小学必须掌握的3500个常用汉字-结果.txt", word, i + "", result.replace("\t", ""));
             }
         }
-        Utils.writeToTxt("E:\\5.txt", StringUtils.join(dataList.toArray(), "\r\n"));
     }
 
 

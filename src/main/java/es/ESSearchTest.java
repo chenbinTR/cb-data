@@ -1,5 +1,6 @@
 package es;
 
+import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.elasticsearch.action.index.IndexResponse;
@@ -10,11 +11,13 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.search.MatchQuery;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author ChenOT
@@ -29,10 +32,17 @@ public class ESSearchTest {
 
     @Test
     public void insertData() {
-        JSONObject json = new JSONObject();
-        json.put("poem_id", "abc");
-        json.put("content", "关关雎鸠，在河之洲，窈窕淑女，君子好逑");
-        IndexResponse response = EsClient.getClient(EsAddress.ALPHA_ES).prepareIndex("nlp_poem", "doc").setSource(json, XContentType.JSON).get();
+        List<String> lines = FileUtil.readUtf8Lines("C:\\Users\\CheN\\Desktop\\t_cn_poem_sentence_copy.txt");
+        for (String line : lines) {
+            String sentence = line.split("\t")[0];
+            String poem_code = line.split("\t")[1];
+            JSONObject json = new JSONObject();
+            json.put("poem_code", poem_code);
+            json.put("sentence", sentence);
+            System.out.println(json);
+            IndexResponse response = EsClient.getClient(EsAddress.ALPHA_ES).prepareIndex("nlp_poem", "doc").setSource(json, XContentType.JSON).get();
+        }
+
     }
 
     @Test
@@ -54,19 +64,19 @@ public class ESSearchTest {
     /**
      * 1、对查询条件内容进行分词
      * 2、可以指定一个或多个字段
-     * 3、可以用or或and为条件
+     * 3、可以用or或and为条件（查询条件的分词结果，部分包含在存储中还是全部包含在存储中）
      * 4、进行每个分词匹配
      */
     @Test
     public void queryStringQuery() {
-        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.queryStringQuery("关关").field("content").defaultOperator(Operator.OR)).get();
+        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.queryStringQuery("风温柔娇韵司").field("sentence").defaultOperator(Operator.AND)).get();
         SearchHits hits = searchResponse.getHits();
         // 获取命中次数，查询结果有多少对象
         System.out.println("查询结果有：" + hits.getTotalHits() + "条");
         Iterator<SearchHit> iterator = hits.iterator();
         while (iterator.hasNext()) {
             SearchHit next = iterator.next();
-            System.out.println(next.getSourceAsMap().get("content"));
+            System.out.println(next.getSourceAsMap().get("sentence"));
             System.out.println(next.getScore());
         }
     }
@@ -76,14 +86,13 @@ public class ESSearchTest {
      * 1、不对查询条件obj分词
      * 2、完全匹配存储中分词的单个词
      * 例如：中/国/人 obj=中，则匹配到，obj=中国，则匹配不到
-     *
+     * <p>
      * termsQuery("key", obj1, obj2..)同上，obj之间是或的关系
-     *
      */
     @Test
     public void termQuery() {
 //        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.termQuery("content", "")).get();
-        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.termsQuery("content", "关","大")).get();
+        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.termsQuery("content", "关", "大")).get();
         SearchHits hits = searchResponse.getHits();
         // 获取命中次数，查询结果有多少对象
         System.out.println("查询结果有：" + hits.getTotalHits() + "条");
@@ -116,37 +125,15 @@ public class ESSearchTest {
         }
     }
 
-    /**
-     * 字段匹配查询
-     * match query搜索的时候，首先会解析查询字符串，进行分词，然后查询，
-     */
-    @Test
-    public void matchQuery() {
-        MultiMatchQueryBuilder multiMatch = QueryBuilders.multiMatchQuery(QueryParser.escape("点！点！点！"));
-        multiMatch.field("msg", 100).field("status");
-
-        SearchResponse searchResponse = searchRequestBuilder.setQuery(multiMatch).get();
-        SearchHits hits = searchResponse.getHits();
-//        System.out.println(searchResponse.toString());
-        // 获取命中次数，查询结果有多少对象
-        System.out.println("查询结果有：" + hits.getTotalHits() + "条");
-        Iterator<SearchHit> iterator = hits.iterator();
-        while (iterator.hasNext()) {
-            SearchHit next = iterator.next();
-            System.out.println(next.getSourceAsMap().get("name"));
-            System.out.println(next.getScore());
-        }
-    }
-
 
     /**
      * 相似查询（基于编辑距离）
      * 1、查询条件内容不分词
-     * 2、
+     * 2、目前测试不适合中文的情况
      */
     @Test
-    public void searcfuzzy() {
-        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.fuzzyQuery("content", "关雎鸠关")).get();
+    public void fuzzyQuery() {
+        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.fuzzyQuery("content", "关")).get();
         SearchHits hits = searchResponse.getHits();
         // 获取命中次数，查询结果有多少对象
         System.out.println("查询结果有：" + hits.getTotalHits() + "条");
@@ -157,6 +144,52 @@ public class ESSearchTest {
             System.out.println(next.getScore());
         }
     }
+
+    @Test
+    public void matchPhraseQuery() {
+        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.matchPhraseQuery("content", "床前明月光")).get();
+//        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.matchQuery("content", "月明").operator(Operator.AND)).get();
+        SearchHits hits = searchResponse.getHits();
+        // 获取命中次数，查询结果有多少对象
+        System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+        Iterator<SearchHit> iterator = hits.iterator();
+        while (iterator.hasNext()) {
+            SearchHit next = iterator.next();
+            System.out.println(next.getSourceAsMap().get("content"));
+        }
+    }
+
+    /**
+     * 与queryStringQuery同
+     */
+    @Test
+    public void matchQuery() {
+        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.matchQuery("sentence", "娇温柔风韵司").operator(Operator.AND)).get();
+        SearchHits hits = searchResponse.getHits();
+        // 获取命中次数，查询结果有多少对象
+        System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+        Iterator<SearchHit> iterator = hits.iterator();
+        while (iterator.hasNext()) {
+            SearchHit next = iterator.next();
+            System.out.println(next.getSourceAsMap().get("sentence"));
+            System.out.println(next.getScore());
+        }
+    }
+
+    @Test
+    public void multiMatchQuery() {
+        SearchResponse searchResponse = searchRequestBuilder.setQuery(QueryBuilders.multiMatchQuery("娇温柔风韵司", "sentence", "content").operator(Operator.AND)).get();
+        SearchHits hits = searchResponse.getHits();
+        // 获取命中次数，查询结果有多少对象
+        System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+        Iterator<SearchHit> iterator = hits.iterator();
+        while (iterator.hasNext()) {
+            SearchHit next = iterator.next();
+            System.out.println(next.getSourceAsMap().get("sentence"));
+            System.out.println(next.getScore());
+        }
+    }
+
 
     /**
      * 复杂查询
@@ -169,7 +202,7 @@ public class ESSearchTest {
         SearchResponse searchResponse = EsClient.getClient(EsAddress.LOCAL).prepareSearch("test")
                 .setTypes("book")
                 .setQuery(QueryBuilders.boolQuery()
-                        .should(QueryBuilders.termQuery("interests", "小飞侠"))
+                        .must(QueryBuilders.termQuery("interests", "小飞侠"))
                 )
                 .get();
         SearchHits hits = searchResponse.getHits();
