@@ -1,19 +1,18 @@
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.convert.NumberChineseFormatter;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import tts.TtsRequest;
 import utils.Utils;
 
 import java.io.File;
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,81 +71,21 @@ public class Test1 {
     private static Pattern pattern = Pattern.compile("&#.+?;");
 
     public static void main(String[] args) {
-        System.out.println("（1）kaishi".replaceAll("（\\d+）",""));
+//        System.out.println(NumberChineseFormatter.chineseToNumber("五六"));
+        System.out.println(chineseNumber2Int("开始"));
+//        final String P_NAMED = ".*(适合|适用).*?(?<age>[\\d一二三四五六七八九十]+)岁.*";
+//        final String DATE_STRING = "适合五六岁的宝宝吗";
+//
+//        Pattern pattern = Pattern.compile(P_NAMED);
+//        Matcher matcher = pattern.matcher(DATE_STRING);
+//        if(!matcher.matches()){
+//            return;
+//        }
+//        matcher.find();
+//        System.out.printf("\n===========使用名称获取=============");
+//        System.out.printf("\nmatcher.group(0) value:%s", matcher.group(0));
+//        System.out.printf("\n matcher.group('age') value:%s", matcher.group("age"));
     }
-
-    private static void processWord(){
-        List<String> lines = FileUtil.readUtf8Lines("E:\\新建文件夹\\牛津3000核心词.txt");
-        String url = "http://47.94.53.111/universe-dict-v1/query";
-        JSONObject param = new JSONObject();
-        param.put("dicts", Arrays.asList("en_word"));
-        for (String line : lines) {
-            String word = StringUtils.strip(line);
-            param.put("text", word);
-            String result = Utils.httpPost(param.toJSONString(), url);
-            int i = 1;
-            try {
-                if (StringUtils.isBlank(result)) {
-                    i = 0;
-                } else {
-                    JSONObject reJson = JSONObject.parseObject(result);
-                    int code = reJson.getIntValue("code");
-                    if (code != 200) {
-                        i = 0;
-                    } else {
-                        if (reJson.toJSONString().indexOf("en_word") < 0) {
-                            i = 0;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                i = 0;
-            }
-            Utils.writeToTxt("E:\\新建文件夹\\牛津3000核心词-结果.txt", word, i + "", result.replace("\t", ""));
-        }
-    }
-
-    private static void porcessChar() {
-        List<String> lines = FileUtil.readUtf8Lines("E:\\新建文件夹\\中小学必须掌握的3500个常用汉字.txt");
-        String url = "http://47.94.53.111/universe-dict-v1/query";
-        JSONObject param = new JSONObject();
-        param.put("dicts", Arrays.asList("cn_char"));
-        for (String line : lines) {
-            char[] items = StringUtils.strip(line).toCharArray();
-            for (char item : items) {
-                String word = String.valueOf(item);
-                if (StringUtils.isBlank(word)) {
-                    continue;
-                }
-                word = StringUtils.strip(word);
-                param.put("text", word);
-                String result = Utils.httpPost(param.toJSONString(), url);
-                int i = 1;
-                try {
-                    if (StringUtils.isBlank(result)) {
-                        i = 0;
-                    } else {
-                        JSONObject reJson = JSONObject.parseObject(result);
-                        int code = reJson.getIntValue("code");
-                        if (code != 200) {
-                            i = 0;
-                        } else {
-                            if (reJson.toJSONString().indexOf("cn_char") < 0) {
-                                i = 0;
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    i = 0;
-                }
-                Utils.writeToTxt("E:\\新建文件夹\\中小学必须掌握的3500个常用汉字-结果.txt", word, i + "", result.replace("\t", ""));
-            }
-        }
-    }
-
-
     public static boolean isContainCn(String str) {
         Pattern pattern = Pattern.compile("[^a-zA-Z0-9'\\s\\.\\?-]");
         Matcher m = pattern.matcher(str);
@@ -177,5 +116,64 @@ public class Test1 {
         return str;
     }
 
-
+    /**
+     * 中文數字转阿拉伯数组【十万九千零六十  --> 109060】
+     * @author 雪见烟寒
+     * @param chineseNumber
+     * @return
+     */
+    private static int chineseNumber2Int(String chineseNumber){
+        int result = 0;
+        int temp = 1;//存放一个单位的数字如：十万
+        int count = 0;//判断是否有chArr
+        char[] cnArr = new char[]{'一','二','三','四','五','六','七','八','九'};
+        char[] chArr = new char[]{'十','百','千','万','亿'};
+        for (int i = 0; i < chineseNumber.length(); i++) {
+            boolean b = true;//判断是否是chArr
+            char c = chineseNumber.charAt(i);
+            for (int j = 0; j < cnArr.length; j++) {//非单位，即数字
+                if (c == cnArr[j]) {
+                    if(0 != count){//添加下一个单位之前，先把上一个单位值添加到结果中
+                        result += temp;
+                        temp = 1;
+                        count = 0;
+                    }
+                    // 下标+1，就是对应的值
+                    temp = j + 1;
+                    b = false;
+                    break;
+                }
+            }
+            if(b){//单位{'十','百','千','万','亿'}
+                for (int j = 0; j < chArr.length; j++) {
+                    if (c == chArr[j]) {
+                        switch (j) {
+                            case 0:
+                                temp *= 10;
+                                break;
+                            case 1:
+                                temp *= 100;
+                                break;
+                            case 2:
+                                temp *= 1000;
+                                break;
+                            case 3:
+                                temp *= 10000;
+                                break;
+                            case 4:
+                                temp *= 100000000;
+                                break;
+                            default:
+                                break;
+                        }
+                        count++;
+                    }
+                }
+            }
+            if (i == chineseNumber.length() - 1) {//遍历到最后一个字符
+                result += temp;
+            }
+        }
+        return result;
+    }
 }
